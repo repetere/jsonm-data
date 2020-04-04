@@ -1,7 +1,10 @@
 // import { ml, } from './ml';
+import { default as natural, } from 'natural';
 import { nlp, } from './nlp';
 // import { util as utils, } from './util';
 import { DataSet, } from './DataSet';
+// console.log({ natural });
+// export const nat = natural;
 /**
  * class creating sparse matrices from a corpus
  * @class ColumnVectorizer
@@ -26,6 +29,17 @@ export class ColumnVectorizer {
      * @returns {this}
      */
     constructor(options = {}) {
+        // if (typeof window !== 'undefined' && (typeof window.natural === 'undefined' ||  typeof natural==='undefined')) {
+        //   throw new Error('NLP requires natural');
+        // }
+        try {
+            if (typeof nlp.PorterStemmer === 'undefined') {
+                Object.assign(nlp, natural);
+            }
+        }
+        catch (E) {
+            console.error({ E });
+        }
         this.data = options.data || [];
         this.tokens = new Set();
         this.vectors = [];

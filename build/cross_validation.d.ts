@@ -60,7 +60,6 @@ declare function cross_validate_score(options?: {}): any[];
  */
 declare function grid_search(options?: {}): any;
 /**
- * @namespace
  * @see {@link https://machinelearningmastery.com/implement-resampling-methods-scratch-python/}
  */
 export declare const cross_validation: {

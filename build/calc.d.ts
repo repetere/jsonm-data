@@ -1,6 +1,5 @@
 /**
  * Formats an array of transactions into a sparse matrix like format for Apriori/Eclat
- * @memberOf calc
  * @see {@link https://github.com/alexisfacques/Node-FPGrowth}
  * @param {Array} data - CSV data of transactions
  * @param {Object} options
@@ -14,7 +13,6 @@ export declare function getTransactions(data: any, options: any): {
 };
 /**
  * returns association rule learning results
- * @memberOf calc
  * @see {@link https://github.com/alexisfacques/Node-FPGrowth}
  * @param {Array} transactions - sparse matrix of transactions
  * @param {Object} options
@@ -25,9 +23,6 @@ export declare function getTransactions(data: any, options: any): {
  * @returns {Object} Returns the result from Node-FPGrowth or a summary of support and strong associations
  */
 export declare function assocationRuleLearning(transactions: never[] | undefined, options: any): Promise<unknown>;
-/**
- * @namespace
- */
 export declare const calc: {
     getTransactions: typeof getTransactions;
     assocationRuleLearning: typeof assocationRuleLearning;

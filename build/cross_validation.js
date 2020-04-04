@@ -216,7 +216,6 @@ function grid_search(options = {}) {
         : results[0];
 }
 /**
- * @namespace
  * @see {@link https://machinelearningmastery.com/implement-resampling-methods-scratch-python/}
  */
 export const cross_validation = {
