@@ -2,7 +2,15 @@ import { get as request, } from 'http';
 import { get as requestHTTPS, } from 'https';
 import { default as validURL, } from 'valid-url';
 import { default as csv, } from 'csvtojson';
-window.CSV = csv;
+
+export type FilePath = String;
+export type CSVOptions = {
+  [index: string]: string|boolean;
+};;
+export type CSVJSONRow = {
+  [index: string]: string;
+};
+export type CSVJSON = CSVJSONRow[];
 /**
  * Asynchronously loads a CSV from a remote URL and returns an array of objects
  * @example
@@ -12,23 +20,23 @@ window.CSV = csv;
  * @param {Object} [options] - options passed to csvtojson
  * @returns {Object[]} returns an array of objects from a csv where each column header is the property name  
  */
-export async function loadCSVURI(filepath, options) {
-  const reqMethod = (filepath.search('https', 'gi') > -1) ? requestHTTPS : request;
+export async function loadCSVURI(filepath:string, options?:CSVOptions):Promise<CSVJSON> {
+  const reqMethod = (filepath.search(/https/gi) > -1) ? requestHTTPS : request;
   return new Promise((resolve, reject) => {
-    const csvData = [];
+    const csvData:CSVJSON = [];
     const config = Object.assign({ checkType: true, }, options);
     const req = reqMethod(filepath, res => {
       csv(config).fromStream(res)
         // .on('data', jsonObj => {
         //   csvData.push(JSON.parse(jsonObj.toString()));
         // })
-        .on('json', jsonObj => {
+        .on('json', (jsonObj:CSVJSONRow) => {
           csvData.push(jsonObj);
         })
-        .on('error', err => {
+        .on('error', (err:Error) => {
           return reject(err);
         })
-        .on('done', error => {
+        .on('done', (error?:Error) => {
           if (error) {
             return reject(error);
           } else {
@@ -50,24 +58,24 @@ export async function loadCSVURI(filepath, options) {
  * @param {Object} [options] - options passed to csvtojson
  * @returns {Object[]} returns an array of objects from a csv where each column header is the property name  
  */
-export async function loadCSV(filepath, options) {
+export async function loadCSV(filepath:string, options?:CSVOptions):Promise<CSVJSON> {
   if (validURL.isUri(filepath)) {
     return loadCSVURI(filepath, options);
   } else {
     return new Promise((resolve, reject) => {
-      const csvData = [];
+      const csvData:CSVJSON = [];
       const config = Object.assign({ checkType: true, }, options);
       csv(config).fromFile(filepath)
         // .on('data', jsonObj => {
         //   csvData.push(JSON.parse(jsonObj.toString()));
         // })
-        .on('json', jsonObj => {
+        .on('json', (jsonObj:CSVJSONRow) => {
           csvData.push(jsonObj);
         })
-        .on('error', err => {
+        .on('error', (err:Error) => {
           return reject(err);
         })
-        .on('done', error => {
+        .on('done', (error?:Error) => {
           if (error) {
             return reject(error);
           } else {
@@ -87,7 +95,7 @@ export async function loadCSV(filepath, options) {
  * @param {Object} [options] - options passed to csvtojson
  * @returns {Object[]} returns an array of objects from a csv where each column header is the property name  
  */
-export async function loadTSV(filepath, options) {
+export async function loadTSV(filepath:string, options?:CSVOptions) {
   const tsvOptions = Object.assign({
     checkType: true,
   }, options, {

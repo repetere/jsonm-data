@@ -1,3 +1,40 @@
+export declare type DataSetTransform = {
+    [index: string]: string[] | any;
+};
+export declare type FitColumnsOption = {
+    name: string;
+    options?: {
+        [index: string]: any;
+    };
+};
+export declare type FitColumnsOptions = FitColumnsOption[];
+export declare type Vector = number[];
+export declare type Matrix = number[][];
+export declare type ReverseColumnMatrixOptions = {
+    vectors?: Matrix;
+    labels?: string[];
+};
+export declare type ReverseColumnVectorOptions = {
+    vector?: Vector;
+    labels?: string[];
+};
+export declare type ColumnArrayOptions = {
+    [index: string]: any;
+};
+export declare type variableLabels = Array<Array<string>>;
+export declare type OneHotEncoderOptions = {
+    merge: boolean;
+    data: Vector;
+    columnArrayOptions: ColumnArrayOptions;
+    prefix: string;
+};
+export declare type OneHotEncodedData = {
+    [index: string]: Vector;
+};
+export declare type Datum = {
+    [index: string]: any;
+};
+export declare type Data = Datum[];
 /**
  * class for manipulating an array of objects, typically from CSV data
  * @class DataSet
@@ -20,7 +57,7 @@ export declare class DataSet {
      * @param {Object} transforms
      * @returns {Array<Object>} returns fit columns, columns property
      */
-    static getTransforms(transforms?: {}): never[];
+    static getTransforms(transforms?: DataSetTransform): FitColumnsOptions;
     /**
      * returns an array of objects by applying labels to matrix of columns
      * @example
@@ -39,8 +76,8 @@ export declare class DataSet {
      * @param {String[]} options.labels - array of labels
      * @returns {Object[]} an array of objects with properties derived from options.labels
      */
-    static reverseColumnMatrix(options?: {}): any;
-    static reverseColumnVector(options?: {}): any;
+    static reverseColumnMatrix(options?: ReverseColumnMatrixOptions): Data;
+    static reverseColumnVector(options?: ReverseColumnVectorOptions): Data;
     /**
      * Returns an object into an one hot encoded object
      * @example
@@ -56,7 +93,11 @@ export declare class DataSet {
      * @param {{labels:Array<String>,prefix:String,name:String}} options - encoded object options
      * @returns {Object} one hot encoded object
      */
-    static encodeObject(data: any, options: any): any;
+    static encodeObject(data: Datum, options: {
+        labels: string[];
+        prefix: string;
+        name: string;
+    }): Datum;
     /**
    * returns a new object of one hot encoded values
    * @example
@@ -74,7 +115,7 @@ export declare class DataSet {
     * @see {@link http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html}
     * @return {Object}
     */
-    static oneHotEncoder(name: any, options: any): any;
+    static oneHotEncoder(this: any, name: string, options: OneHotEncoderOptions): OneHotEncodedData;
     /**
      * Return one hot encoded data
      * @example

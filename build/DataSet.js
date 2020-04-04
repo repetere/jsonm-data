@@ -51,6 +51,7 @@ export class DataSet {
                 },
             };
             if (Array.isArray(transformColumnObject) && transformColumnObject.length > 1) {
+                //@ts-ignore
                 transformObject.options[transformConfigMap[transformColumnObject[0]]] = transformColumnObject[1];
             }
             result.push(transformObject);
@@ -76,7 +77,7 @@ export class DataSet {
      * @returns {Object[]} an array of objects with properties derived from options.labels
      */
     static reverseColumnMatrix(options = {}) {
-        const { vectors, labels, } = options;
+        const { vectors = [], labels = [], } = options;
         const features = (Array.isArray(labels) && Array.isArray(labels[0]))
             ? labels
             : labels.map(label => [label,]);
@@ -89,7 +90,7 @@ export class DataSet {
         }, []);
     }
     static reverseColumnVector(options = {}) {
-        const { vector, labels, } = options;
+        const { vector = [], labels = [], } = options;
         const features = (Array.isArray(labels) && Array.isArray(labels[0]))
             ? labels
             : labels.map(label => [label,]);

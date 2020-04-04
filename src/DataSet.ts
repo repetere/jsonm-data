@@ -19,12 +19,53 @@ const transformConfigMap = {
   merge: 'mergeData',
 };
 
+export type DataSetTransform = {
+  [index: string]: string[]|any;
+}
+export type FitColumnsOption = {
+  name: string;
+  options?: {
+    [index: string]: any;
+    // strategy?: string;
+  }
+};
+export type FitColumnsOptions = FitColumnsOption[];
+export type Vector = number[];
+export type Matrix = number[][];
+export type ReverseColumnMatrixOptions = {
+  vectors?: Matrix;
+  labels?: string[];
+};
+export type ReverseColumnVectorOptions = {
+  vector?: Vector;
+  labels?: string[];
+};
+export type ColumnArrayOptions = {
+  [index: string]: any;
+}
+export type variableLabels = Array<Array<string>>;
+export type OneHotEncoderOptions = {
+  merge: boolean;
+  data: Vector;
+  columnArrayOptions: ColumnArrayOptions;
+  prefix: string;
+  // [index: string]: any;
+}
+export type OneHotEncodedData = {
+  [index: string]: Vector;
+}
+
+export type Datum = {
+  [index: string]: any;
+};
+export type Data = Datum[];
+
 /**
  * class for manipulating an array of objects, typically from CSV data
  * @class DataSet
  * @memberOf preprocessing
  */
-export class DataSet {
+export class DataSet  {
   /**
    * Allows for fit transform short hand notation
    * @example
@@ -41,8 +82,8 @@ DataSet.getTransforms({
    * @param {Object} transforms 
    * @returns {Array<Object>} returns fit columns, columns property
    */
-  static getTransforms(transforms = {}) {
-    return Object.keys(transforms).reduce((result, columnName) => {
+  static getTransforms(transforms:DataSetTransform = {}):FitColumnsOptions {
+    return Object.keys(transforms).reduce((result:FitColumnsOptions, columnName) => {
       const transformColumnObject = transforms[ columnName ];
       const transformObject = {
         name: columnName,
@@ -53,6 +94,7 @@ DataSet.getTransforms({
         },
       };
       if (Array.isArray(transformColumnObject) && transformColumnObject.length > 1) {
+        //@ts-ignore
         transformObject.options[ transformConfigMap[ transformColumnObject[ 0 ] ] ] = transformColumnObject[ 1 ];
       }
       result.push(transformObject);
@@ -77,25 +119,25 @@ MS.DataSet.reverseColumnMatrix({vectors:AgeSalMatrix,labels:dependentVariables})
    * @param {String[]} options.labels - array of labels
    * @returns {Object[]} an array of objects with properties derived from options.labels
    */
-  static reverseColumnMatrix(options = {}) {
-    const { vectors, labels, } = options;
+  static reverseColumnMatrix(options:ReverseColumnMatrixOptions = {}):Data {
+    const { vectors=[], labels=[], } = options;
     const features = (Array.isArray(labels) && Array.isArray(labels[ 0 ]))
       ? labels
       : labels.map(label => [label, ]);
-    return vectors.reduce((result, val) => {
-      result.push(val.reduce((prop, value, index) => {
+    return vectors.reduce((result:Data, val:Vector) => {
+      result.push(val.reduce((prop:Datum, value, index) => {
         prop[ features[ index ][ 0 ] ] = val[ index ];
         return prop;
       }, {}));
       return result;
     }, []);
   }
-  static reverseColumnVector(options = {}) {
-    const { vector, labels, } = options;
+  static reverseColumnVector(options:ReverseColumnVectorOptions = {}):Data {
+    const { vector=[], labels=[], } = options;
     const features = (Array.isArray(labels) && Array.isArray(labels[ 0 ]))
       ? labels
       : labels.map(label => [label, ]);
-    return vector.reduce((result, val) => {
+    return vector.reduce((result:Data, val) => {
       result.push(
         { [ features[ 0 ][ 0 ] ]: val, }
       );
@@ -117,9 +159,9 @@ EncodedCSVDataSet.encodeObject(data, options); // => { fruit_apple: 1, fruit_ora
    * @param {{labels:Array<String>,prefix:String,name:String}} options - encoded object options
    * @returns {Object} one hot encoded object
    */
-  static encodeObject(data, options) {
+  static encodeObject(data: Datum, options: { labels: string[]; prefix: string; name: string;}):Datum {
     const { labels, prefix, name, } = options;
-    const encodedData = labels.reduce((encodedObj, label) => {
+    const encodedData = labels.reduce((encodedObj:Datum, label) => {
       const oneHotLabelArrayName = `${prefix}${label}`;
       encodedObj[ oneHotLabelArrayName ] = (label && data[ name ] && data[ name ].toString() === label.toString()) ? 1 : 0;
       return encodedObj;
@@ -143,7 +185,7 @@ const oneHotCountryColumn = dataset.oneHotEncoder('Country');
   * @see {@link http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html}
   * @return {Object}
   */
-  static oneHotEncoder(name, options) {
+  static oneHotEncoder(this: any, name:string, options:OneHotEncoderOptions):OneHotEncodedData {
     const config = Object.assign({
       merge: true,
     }, options);
@@ -151,7 +193,7 @@ const oneHotCountryColumn = dataset.oneHotEncoder('Country');
     const labels = Array.from(new Set(labelData).values());
     const prefix = config.prefix || `${name}_`;
     const encodedData = labelData.reduce(
-      (result, val, index, arr) => {
+      (result:OneHotEncodedData, val, index, arr) => {
         labels.forEach(encodedLabel => {
           const oneHotLabelArrayName = `${prefix}${encodedLabel}`;
           const oneHotVal = (val === encodedLabel) ? 1 : 0;
