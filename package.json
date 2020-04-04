@@ -46,7 +46,7 @@
     "coverage": "coveralls"
   },
   "dependencies": {
-    "csvtojson": "^1.1.9",
+    "csvtojson": "^2.0.0",
     "js-grid-search-lite": "^1.3.3",
     "lodash.range": "^3.2.0",
     "lodash.rangeright": "^4.2.0",
