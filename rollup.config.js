@@ -6,12 +6,32 @@ import globals from 'rollup-plugin-node-globals';
 import replace from '@rollup/plugin-replace';
 import terser from 'rollup-plugin-terser-js';
 import sucrase from '@rollup/plugin-sucrase';
+import alias from '@rollup/plugin-alias';
 import pkg from "./package.json";
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 const name = 'ModelXData';
 const external = [
   // "react",
   // "react-dom",
+];
+const serverExternal = [
+
+  'valid-url',
+  'http',
+  'https',
+  "csvtojson",
+  "js-grid-search-lite",
+  "lodash.range",
+  "lodash.rangeright",
+  "ml-confusion-matrix",
+  "ml-matrix",
+  "ml-stat",
+  "natural",
+  "node-fpgrowth",
+  "probability-distributions",
+  "random-js",
+  "valid-url",
 ];
 const windowGlobals = {
   // react: "React"
@@ -64,12 +84,25 @@ function getOutput({ minify = false, server = false, }) {
 }
 
 function getPlugins({
-    minify = false,
+  minify = false,
+  browser = false,
 }) {
-  const plugins = [
+  const plugins = [];
+  if (browser) {
+    plugins.push(
+      ...[ nodePolyfills(),
+        alias({
+      csvtojson:'nlp'
+      // entries: {
+      //   find: /csv$/,
+      //   replacement: 'nlp'
+      // }
+    })]);
+  }
+  plugins.push(...[
     sucrase({
       // exclude: ['node_modules/**'],
-      transforms: ['jsx','typescript']
+      transforms: ['typescript']
     }),
     // // external(),
     replace({
@@ -93,33 +126,14 @@ function getPlugins({
       //     // 'node_modules/react-is/index.js': ['isValidElementType'],
       //     // 'node_modules/react/index.js': [
       //     //     'Children',
-      //     //     'Component',
-      //     //     'PropTypes',
-      //     //     'createContext',
-      //     //     'Fragment',
-      //     //     'Suspense',
-      //     //     'lazy',
-      //     //     'createElement',
-      //     //     'useState',
-      //     //     'useEffect',
-      //     //     'useContext',
-      //     //     'useReducer',
-      //     //     'useCallback',
-      //     //     'useMemo',
-      //     //     'useRef',
-      //     //     'useImperativeHandle',
-      //     //     'useLayoutEffect',
-      //     //     'useDebugValue',
-      //     //     '__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED',
       //     // ],
-
       // }
     }), // so Rollup can convert `ms` to an ES module
     globals({
       // react: 'React',
       // 'react-dom': 'ReactDOM'
     }),
-  ];
+  ]);
   if (minify) {
     const minifyPlugins = [
 
@@ -143,24 +157,27 @@ export default [
     input: "src/index.ts",
     output: getOutput({
       minify: false,
+      server: true,
+    }),
+    external:serverExternal,
+    plugins: getPlugins({
+      minify: false,
+      browser:false,
+    }),
+  },
+  {
+    input: "src/index.ts",
+    output: getOutput({
+      minify: false,
       server: false,
     }),
     external,
     plugins: getPlugins({
       minify: false,
+      browser: true,
     }),
   },
-  {
-    input: "src/index.ts",
-    output: getOutput({
-      minify: false,
-      server: true,
-    }),
-    external,
-    plugins: getPlugins({
-      minify: false,
-    }),
-  },
+
   {
     input: "src/index.ts",
     output: getOutput({
@@ -170,6 +187,7 @@ export default [
     external,
     plugins: getPlugins({
       minify: true,
+      browser:true,
     }),
   },
   {
@@ -178,7 +196,7 @@ export default [
       minify: true,
       server: true,
     }),
-    external,
+    external:serverExternal,
     plugins: getPlugins({
       minify: true,
     }),

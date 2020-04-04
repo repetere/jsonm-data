@@ -1,4 +1,4 @@
-import * as ms from '../../index.mjs';
+import * as ModelXData from './index';
 import chai from 'chai';
 const expect = chai.expect;
 const csvData = [
@@ -47,8 +47,8 @@ const eVString = 'I would rate everything Great, views Great, food Great';
 
 describe('nlp', function() {
   describe('ColumnVectorizer class', () => {
-    const CSVDataSet = new ms.DataSet(csvData);
-    const nlpVectors = new ms.nlp.ColumnVectorizer({
+    const CSVDataSet = new ModelXData.DataSet(csvData);
+    const nlpVectors = new ModelXData.nlp.ColumnVectorizer({
       data: CSVDataSet.columnArray('Review'),
       maxFeatures: 9,
     });
@@ -56,9 +56,9 @@ describe('nlp', function() {
     // console.log({ nlpVectors });
     describe('constructor', () => {
       it('should instantiate a new ColumnVectorizer Class', () => {
-        expect(ms.nlp).to.be.an('object');
-        expect(ms.nlp.ColumnVectorizer).to.be.a('function');
-        expect(nlpVectors).to.be.instanceof(ms.nlp.ColumnVectorizer);
+        expect(ModelXData.nlp).to.be.an('object');
+        expect(ModelXData.nlp.ColumnVectorizer).to.be.a('function');
+        expect(nlpVectors).to.be.instanceof(ModelXData.nlp.ColumnVectorizer);
         expect(nlpVectors.maxFeatures).to.eql(9);
         // console.log({ nlpVectors });
       });
@@ -113,7 +113,7 @@ describe('nlp', function() {
       it('should create a set of unique tokens this.tokens', () => {
         const tokens = csvData.reduce((result, value) => {
           const val = value.Review.toLowerCase();
-          const stringVal = ms.nlp.PorterStemmer.tokenizeAndStem(val).join(' ');
+          const stringVal = ModelXData.nlp.PorterStemmer.tokenizeAndStem(val).join(' ');
           result += stringVal+' ';
           return result;
         }, '');
@@ -126,7 +126,7 @@ describe('nlp', function() {
       it('should create a dictionary of total word counts in this.wordCountMap', () => {
         const wordCountMap = csvData.reduce((result, value) => {
           const val = value.Review.toLowerCase();
-          const stringVals = ms.nlp.PorterStemmer.tokenizeAndStem(val);
+          const stringVals = ModelXData.nlp.PorterStemmer.tokenizeAndStem(val);
           stringVals.forEach(token => {
             result[ token ] = (result[ token ])
               ? result[ token ] + 1

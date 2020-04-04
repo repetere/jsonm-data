@@ -194,7 +194,7 @@ const arrays = pivotVector(vectors); // => [ [1,2,3,3], [2,2,3,3], [3,3,4,3] ];
  * @param {Array[]} vectors 
  * @returns {Array[]}
  */
-function pivotVector(vectors=[]) {
+function pivotVector(vectors = []) {
   return vectors.reduce((result, val, index/*, arr*/) => {
     val.forEach((vecVal, i) => {
       (index === 0)
@@ -319,7 +319,9 @@ function MinMaxScalerTransforms(vector = [], nan_value = -1, return_nan=false, i
   const maximum = typeof inputComponents.maximum !=='undefined' 
     ? inputComponents.maximum
     : max(vector);
+  //@ts-ignore
   const minimum = typeof inputComponents.minimum !=='undefined' 
+  //@ts-ignore
     ? inputComponents.minimum
     : min(vector);
   const scale = (z) => {

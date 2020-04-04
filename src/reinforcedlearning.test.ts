@@ -1,21 +1,14 @@
-import * as ms from '../../index.mjs';
+import { ReinforcedLearningBase, UpperConfidenceBound, ThompsonSampling, } from './ReinforcedLearning';
+import * as ModelXData from './index';
 import chai from 'chai';
 import path from 'path';
-import expose from './expose.js';
-const { __dirname, } = expose;
 const expect = chai.expect;
 let SNA_csv;
-const {
-  ReinforcedLearningBase,
-  UpperConfidenceBound,
-  ThompsonSampling,
-} = ms.ml.RL;
 
-describe('ml', function () { 
-  this.timeout(20000);
-  before((done) => {
+describe('ReinforcedLearning', function () { 
+  beforeAll((done) => {
     Promise.all([
-      ms.loadCSV(path.join(__dirname, '../mock/Ads_CTR_Optimisation.csv'), {
+      ModelXData.csv.loadCSV(path.join(__dirname, '../test/mock/Ads_CTR_Optimisation.csv'), {
         colParser: 'Ad 1,Ad 2,Ad 3,Ad 4,Ad 5,Ad 6,Ad 7,Ad 8,Ad 9,Ad 10'
           .split(',')
           .reduce((result, value) => {

@@ -1,7 +1,7 @@
-import { default as Random, } from 'random-js';
+import { Random, MersenneTwister19937, integer, } from 'random-js';
 import { default as range, } from 'lodash.range';
 import { Matrix, } from 'ml-matrix';
-import * as ConfusionMatrix from 'ml-confusion-matrix';
+import { default as ConfusionMatrix, }from 'ml-confusion-matrix';
 import { util, } from './util';
 import { DataSet, } from './DataSet';
 import { default as jgsl, } from 'js-grid-search-lite';
@@ -29,7 +29,7 @@ function train_test_split(dataset = [], options = {
   return_array: false,
   parse_int_train_size: true,
 }) {
-  const engine = Random.engines.mt19937().seed(options.random_state || 0);
+  const engine = MersenneTwister19937.seed(options.random_state || 0);
   const training_set = [];
   const parse_int_train_size = (typeof options.parse_int_train_size === 'boolean') ? options.parse_int_train_size : true;
   const train_size_length = (options.train_size)
@@ -41,7 +41,7 @@ function train_test_split(dataset = [], options = {
   const dataset_copy = [].concat(dataset);
 
   while (training_set.length < train_size) {
-    const index = Random.integer(0, (dataset_copy.length - 1))(engine);
+    const index = integer(0, (dataset_copy.length - 1))(engine);
     // console.log({ index });
     training_set.push(dataset_copy.splice(index, 1)[0]);
   }
@@ -69,7 +69,7 @@ function cross_validation_split(dataset = [], options = {
   folds: 3,
   random_state: 0,
 }) { //kfolds
-  const engine = Random.engines.mt19937().seed(options.random_state || 0);
+  const engine = MersenneTwister19937.seed(options.random_state || 0);
   const folds = options.folds || 3;
   const dataset_split = [];
   const dataset_copy = [].concat(dataset);
@@ -77,7 +77,7 @@ function cross_validation_split(dataset = [], options = {
   for (let i in range(folds)) {
     const fold = [];
     while (fold.length < foldsize) {
-      const index = Random.integer(0, (dataset_copy.length - 1))(engine);
+      const index = integer(0, (dataset_copy.length - 1))(engine);
       fold.push(dataset_copy.splice(index, 1)[0]);
     }
     dataset_split.push(fold);
