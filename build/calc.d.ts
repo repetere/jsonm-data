@@ -24,7 +24,7 @@ export declare function getTransactions(data: any, options: any): {
  * @param {Map} [options.valuesMap=new Map()] - map of values and labels (used for summary results)
  * @returns {Object} Returns the result from Node-FPGrowth or a summary of support and strong associations
  */
-export declare function assocationRuleLearning(transactions: any[], options: any): Promise<unknown>;
+export declare function assocationRuleLearning(transactions: never[] | undefined, options: any): Promise<unknown>;
 /**
  * @namespace
  */

@@ -79,5 +79,5 @@ export declare class ColumnVectorizer {
      * @param {String} testString
      * @return {number[][]} sparse matrix row for new classification predictions
      */
-    evaluate(testString: string, options: any): any;
+    evaluate(testString: string | undefined, options: any): any;
 }

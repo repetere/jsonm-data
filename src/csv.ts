@@ -2,6 +2,7 @@ import { get as request, } from 'http';
 import { get as requestHTTPS, } from 'https';
 import { default as validURL, } from 'valid-url';
 import { default as csv, } from 'csvtojson';
+// window.CSV = csv;
 /**
  * Asynchronously loads a CSV from a remote URL and returns an array of objects
  * @example

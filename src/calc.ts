@@ -7,7 +7,6 @@ const { FPGrowth, } = fpg;
 
 /**
  * Formats an array of transactions into a sparse matrix like format for Apriori/Eclat
- * @memberOf calc
  * @see {@link https://github.com/alexisfacques/Node-FPGrowth}
  * @param {Array} data - CSV data of transactions 
  * @param {Object} options 
@@ -52,7 +51,6 @@ export function getTransactions(data, options) {
 
 /**
  * returns association rule learning results
- * @memberOf calc
  * @see {@link https://github.com/alexisfacques/Node-FPGrowth}
  * @param {Array} transactions - sparse matrix of transactions 
  * @param {Object} options 
@@ -97,9 +95,6 @@ export function assocationRuleLearning(transactions =[], options) {
   });
 }
 
-/**
- * @namespace
- */
 export const calc = {
   getTransactions,
   assocationRuleLearning,

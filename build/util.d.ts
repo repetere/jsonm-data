@@ -19,7 +19,7 @@ declare function squaredDifference(left: any, right: any): any;
  * @param {Number[]} estimates - estimates values
  * @returns {Number} Standard Error of the Estimate
  */
-declare function standardError(actuals?: any[], estimates?: any[]): number;
+declare function standardError(actuals?: never[], estimates?: never[]): number;
 /**
  * Calculates the z score of each value in the sample, relative to the sample mean and standard deviation.
  * @memberOf util
@@ -27,7 +27,7 @@ declare function standardError(actuals?: any[], estimates?: any[]): number;
  * @param {Number[]} observations - An array like object containing the sample data.
  * @returns {Number[]} The z-scores, standardized by mean and standard deviation of input array
  */
-declare function standardScore(observations?: any[]): number[];
+declare function standardScore(observations?: never[]): number[];
 /**
  * In statistics, the coefficient of determination, denoted R2 or r2 and pronounced "R squared", is the proportion of the variance in the dependent variable that is predictable from the independent variable(s). Compares distance of estimated values to the mean.
  * {\bar {y}}={\frac {1}{n}}\sum _{i=1}^{n}y_{i}
@@ -42,7 +42,7 @@ r2.toFixed(1) // => 0.6
  * @param {Number[]} estimates - estimates values
  * @returns {Number} r^2
  */
-declare function coefficientOfDetermination(actuals?: any[], estimates?: any[]): number;
+declare function coefficientOfDetermination(actuals?: never[], estimates?: never[]): number;
 /**
  * You can use the adjusted coefficient of determination to determine how well a multiple regression equation “fits” the sample data. The adjusted coefficient of determination is closely related to the coefficient of determination (also known as R2) that you use to test the results of a simple regression equation.
  * @example
@@ -76,7 +76,7 @@ R.toFixed(4) // => 0.9408
  * @param {Number[]} estimates - estimates values
  * @returns {Number} R
  */
-declare function coefficientOfCorrelation(actuals?: any[], estimates?: any[]): number;
+declare function coefficientOfCorrelation(actuals?: never[], estimates?: never[]): number;
 /**
  * The coefficent of determination is given by r^2 decides how well the given data fits a line or a curve.
  *
@@ -84,7 +84,7 @@ declare function coefficientOfCorrelation(actuals?: any[], estimates?: any[]): n
  * @param {Number[]}  [estimates=[]]
  * @returns {Number} r^2
  */
-declare function rSquared(actuals?: any[], estimates?: any[]): number;
+declare function rSquared(actuals?: never[], estimates?: never[]): number;
 /**
  * returns an array of vectors as an array of arrays
  * @example
@@ -94,7 +94,7 @@ const arrays = pivotVector(vectors); // => [ [1,2,3,3], [2,2,3,3], [3,3,4,3] ];
  * @param {Array[]} vectors
  * @returns {Array[]}
  */
-declare function pivotVector(vectors?: any[]): any;
+declare function pivotVector(vectors?: never[]): never[];
 /**
  * returns a matrix of values by combining arrays into a matrix
  * @memberOf util
@@ -114,12 +114,12 @@ declare function pivotVector(vectors?: any[]): any;
   * @param {Array} [vectors=[]] - array of arguments for columnArray to merge columns into a matrix
   * @returns {Array} a matrix of column values
   */
-declare function pivotArrays(arrays?: any[]): any;
+declare function pivotArrays(arrays?: never[]): any;
 /** This function returns two functions that can standard scale new inputs and reverse scale new outputs
  * @param {Number[]} values - array of numbers
  * @returns {Object} - {scale[ Function ], descale[ Function ]}
 */
-declare function StandardScalerTransforms(vector?: any[], nan_value?: number, return_nan?: boolean, inputComponents?: {}): {
+declare function StandardScalerTransforms(vector?: never[], nan_value?: number, return_nan?: boolean, inputComponents?: {}): {
     components: {
         average: any;
         standard_dev: any;
@@ -134,7 +134,7 @@ declare function StandardScalerTransforms(vector?: any[], nan_value?: number, re
  * @param {Number[]} values - array of numbers
  * @returns {Object} - {scale[ Function ], descale[ Function ]}
 */
-declare function MinMaxScalerTransforms(vector?: any[], nan_value?: number, return_nan?: boolean, inputComponents?: {}): {
+declare function MinMaxScalerTransforms(vector?: never[], nan_value?: number, return_nan?: boolean, inputComponents?: {}): {
     components: {
         average: any;
         standard_dev: any;
@@ -257,11 +257,11 @@ declare function meanAbsolutePercentageError(actuals: any, estimates: any): any;
  */
 export declare const util: {
     range: {
-        (start: number, end?: number, step?: number): number[];
+        (start: number, end?: number | undefined, step?: number | undefined): number[];
         (end: number, index: string | number, guard: object): number[];
     };
     rangeRight: {
-        (start: number, end?: number, step?: number): number[];
+        (start: number, end?: number | undefined, step?: number | undefined): number[];
         (end: number, index: string | number, guard: object): number[];
     };
     scale: (a: any, d: any) => any;

@@ -20,7 +20,7 @@ export declare class DataSet {
      * @param {Object} transforms
      * @returns {Array<Object>} returns fit columns, columns property
      */
-    static getTransforms(transforms?: {}): any[];
+    static getTransforms(transforms?: {}): never[];
     /**
      * returns an array of objects by applying labels to matrix of columns
      * @example
@@ -159,7 +159,7 @@ export declare class DataSet {
     * @param {Array} [data=[]] - array of data to convert to matrix
     * @returns {Array} a matrix of column values
     */
-    static columnMatrix(vectors?: any[], data?: any[]): any;
+    static columnMatrix(vectors?: never[], data?: never[]): any;
     /**
      * returns a JavaScript Object from a Map (supports nested Map Objects)
      * @example const csvObj = new DataSet([{col1:1,col2:5},{col1:2,col2:6}]);
@@ -189,7 +189,7 @@ export declare class DataSet {
      * @param {Object[]} dataset
      * @returns {this}
      */
-    constructor(data?: any[], options?: {});
+    constructor(data?: never[], options?: {});
     /**
      * returns Object of all encoders and scalers
      * @example const csvObj = new DataSet([{col1:1,col2:5},{col1:false,col2:6}]);
@@ -342,8 +342,8 @@ export declare class DataSet {
       * @param {Array} data - new dataset data
       * @returns {Object}
       */
-    columnMerge(name: any, data?: any[]): {
-        [x: number]: any[];
+    columnMerge(name: any, data?: never[]): {
+        [x: number]: never[];
     };
     /**
      * Inverses transform on an object

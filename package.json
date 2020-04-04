@@ -1,6 +1,6 @@
 {
   "name": "@modelx/data",
-  "version": "0.0.1",
+  "version": "0.8.0",
   "description": "modelscript is a javascript module with simple and efficient tools for data mining and data analysis in JavaScript. When modelscript used with ML.js, pandas-js, and numjs, you're left with the equivalent R/Python tool set in JavaScript.",
   "main": "dist/index.cjs.js",
   "module": "build/index.js",
@@ -58,9 +58,12 @@
     "@types/jest": "^25.1.4",
     "@types/lodash.range": "^3.2.6",
     "@types/lodash.rangeright": "^4.2.6",
+    "@types/natural": "^0.6.3",
+    "@types/probability-distributions": "^0.1.0",
     "@types/react": "^16.9.31",
     "@types/react-dom": "^16.9.6",
     "@types/sinon": "^9.0.0",
+    "@types/valid-url": "^1.0.3",
     "async_hooks": "^1.0.0",
     "chai": "^4.2.0",
     "enzyme": "^3.11.0",
@@ -80,7 +83,8 @@
     "ts-jest": "^25.3.0",
     "tslib": "^1.11.1",
     "typedoc": "^0.17.3",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "underscore": "^1.10.2"
   },
   "jest": {
     "preset": "ts-jest",

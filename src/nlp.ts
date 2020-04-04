@@ -7,4 +7,6 @@ import { ColumnVectorizer, } from './ColumnVectorizer';
  */
 export const nlp = Object.assign({
   ColumnVectorizer,
-}, natural);
+},
+  natural
+);

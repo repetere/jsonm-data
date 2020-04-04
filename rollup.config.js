@@ -14,9 +14,11 @@ const name = 'ModelXData';
 const external = [
   // "react",
   // "react-dom",
+  'wordnet-db',
+  'webworker-threads',
+  'webworkerThreads',
 ];
 const serverExternal = [
-
   'valid-url',
   'http',
   'https',
@@ -32,9 +34,14 @@ const serverExternal = [
   "probability-distributions",
   "random-js",
   "valid-url",
+  'wordnet-db',
+  'webworker-threads',
 ];
 const windowGlobals = {
-  // react: "React"
+  // react: "React",
+  'webworker-threads':'webworkerThreads',
+  'wordnet-db': 'wordnetDb',
+  'global':'window',
 };
 
 function getOutput({ minify = false, server = false, }) {
@@ -67,7 +74,7 @@ function getOutput({ minify = false, server = false, }) {
       format: "iife",
       exports: "named",
       name,
-      globals:windowGlobals,
+      globals: windowGlobals,
       sourcemap: true
     }
   ];
@@ -87,18 +94,29 @@ function getPlugins({
   minify = false,
   browser = false,
 }) {
-  const plugins = [];
+  const plugins = [
+    
+  ];
   if (browser) {
     plugins.push(
-      ...[ nodePolyfills(),
-        alias({
-      csvtojson:'nlp'
-      // entries: {
-      //   find: /csv$/,
-      //   replacement: 'nlp'
-      // }
-    })]);
-  }
+      ...[
+        replace({
+          'csvtojson': 'http',
+          'natural': 'http',
+          // 'import { default as natural, } from \'natural\';': 'const natural = {};',
+        }),
+        nodePolyfills(),
+      //   alias({
+      // // csvtojson:'util'
+      // csvtojson:'node_modules/csvtojson/browser/csvtojson.min.js'
+      // // entries: {
+      // //   find: /csv$/,
+      // //   replacement: 'http'
+      // // }
+      //   })
+      ]);
+  } 
+  
   plugins.push(...[
     sucrase({
       // exclude: ['node_modules/**'],
@@ -108,7 +126,7 @@ function getPlugins({
     replace({
       'process.env.NODE_ENV': minify ?
         JSON.stringify('production') : JSON.stringify('development'),
-      'global.': '(typeof global!=="undefined" ? global : window).'
+      // 'global.': '(typeof global!=="undefined" ? global : window).'
     }),
 
     typescript({
@@ -116,7 +134,9 @@ function getPlugins({
       declaration: false,
       declarationDir: null,
     }),
+    
     resolve({
+      extensions: ['.js', '.ts'],
       preferBuiltins: true,
     }),
     builtins({}),
@@ -131,7 +151,8 @@ function getPlugins({
     }), // so Rollup can convert `ms` to an ES module
     globals({
       // react: 'React',
-      // 'react-dom': 'ReactDOM'
+      'webworker-threads':'webworkerThreads',
+      'wordnet-db':'wordnetDb'
     }),
   ]);
   if (minify) {
@@ -154,6 +175,19 @@ function getPlugins({
 
 export default [
   {
+    input: "src/index.web.ts",
+    output: getOutput({
+      minify: false,
+      server: false,
+    }),
+    context:'window',
+    external,
+    plugins: getPlugins({
+      minify: false,
+      browser: true,
+    }),
+  },
+  {
     input: "src/index.ts",
     output: getOutput({
       minify: false,
@@ -166,20 +200,7 @@ export default [
     }),
   },
   {
-    input: "src/index.ts",
-    output: getOutput({
-      minify: false,
-      server: false,
-    }),
-    external,
-    plugins: getPlugins({
-      minify: false,
-      browser: true,
-    }),
-  },
-
-  {
-    input: "src/index.ts",
+    input: "src/index.web.ts",
     output: getOutput({
       minify: true,
       server: false,

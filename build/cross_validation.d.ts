@@ -13,7 +13,7 @@ const trainTestSplit = ms.cross_validation.train_test_split(testArray,{ test_siz
  * @param {boolean} [options.return_array=false] - will return an object {train,test} of the split dataset by default or [train,test] if returned as an array
  * @returns {(Object|array)} returns training and test arrays either as an object or arrays
  */
-declare function train_test_split(dataset?: any[], options?: {
+declare function train_test_split(dataset?: never[], options?: {
     test_size: number;
     train_size: number;
     random_state: number;
@@ -21,7 +21,7 @@ declare function train_test_split(dataset?: any[], options?: {
     parse_int_train_size: boolean;
 }): any[][] | {
     train: any[];
-    test: any[];
+    test: never[];
 };
 /**
  * Provides train/test indices to split data in train/test sets. Split dataset into k consecutive folds.
@@ -37,10 +37,10 @@ const crossValidationArrayKFolds = ms.cross_validation.cross_validation_split(te
  * @param {number} [options.random_state=0] - the seed used by the random number generator
  * @returns {array} returns  dataset split into k consecutive folds
  */
-declare function cross_validation_split(dataset?: any[], options?: {
+declare function cross_validation_split(dataset?: never[], options?: {
     folds: number;
     random_state: number;
-}): any[];
+}): any[][];
 /**
  * Used to test variance and bias of a prediction
  * @memberOf cross_validation
