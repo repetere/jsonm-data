@@ -12,7 +12,7 @@ import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 const name = 'ModelXData';
 const external = [
-  // "react",
+  // "natural",
   // "react-dom",
   'wordnet-db',
   'webworker-threads',
@@ -36,9 +36,11 @@ const serverExternal = [
   "valid-url",
   'wordnet-db',
   'webworker-threads',
+  'lapack'
 ];
 const windowGlobals = {
   // react: "React",
+  // natural: "natural",
   'webworker-threads':'webworkerThreads',
   'wordnet-db': 'wordnetDb',
   'global':'window',
@@ -101,39 +103,44 @@ function getPlugins({
     plugins.push(
       ...[
         replace({
-          'csvtojson': 'http',
-          'natural': 'http',
+          // 'csvtojson': 'http',
+          // 'natural': 'http',
+          // 'natural': './stub',
           // 'import { default as natural, } from \'natural\';': 'const natural = {};',
         }),
-        nodePolyfills(),
-      //   alias({
-      // // csvtojson:'util'
+        // nodePolyfills(),
+        alias({
+          // resolve: ['.js', '.ts'],
+          entries: {
+            'natural': './stub',
+          }
+          // csvtojson:'util'
       // csvtojson:'node_modules/csvtojson/browser/csvtojson.min.js'
-      // // entries: {
-      // //   find: /csv$/,
-      // //   replacement: 'http'
-      // // }
-      //   })
+      // entries: {
+      //   find: /csv$/,
+      //   replacement: 'http'
+      // }
+        })
       ]);
   } 
   
   plugins.push(...[
     sucrase({
-      // exclude: ['node_modules/**'],
+      exclude: ['node_modules/**'],
       transforms: ['typescript']
     }),
-    // // external(),
+    // external(),
     replace({
       'process.env.NODE_ENV': minify ?
         JSON.stringify('production') : JSON.stringify('development'),
       // 'global.': '(typeof global!=="undefined" ? global : window).'
     }),
 
-    typescript({
-      noEmitOnError: false,
-      declaration: false,
-      declarationDir: null,
-    }),
+    // typescript({
+    //   noEmitOnError: false,
+    //   declaration: false,
+    //   declarationDir: null,
+    // }),
     
     resolve({
       extensions: ['.js', '.ts'],
@@ -141,7 +148,7 @@ function getPlugins({
     }),
     builtins({}),
     commonjs({
-      extensions: [ '.js', '.ts','.jsx' ,'.tsx' ]
+      // extensions: [ '.js', '.ts','.jsx' ,'.tsx' ]
       // namedExports: {
       //     // 'node_modules/react-is/index.js': ['isValidElementType'],
       //     // 'node_modules/react/index.js': [

@@ -1,4 +1,4 @@
-import { Random, MersenneTwister19937, integer, } from 'random-js';
+import { MersenneTwister19937, integer, } from 'random-js';
 import { default as range, } from 'lodash.range';
 import { Matrix, } from 'ml-matrix';
 import { default as ConfusionMatrix, }from 'ml-confusion-matrix';

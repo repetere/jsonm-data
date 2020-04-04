@@ -1,5 +1,5 @@
-import { default as natural, } from 'natural';
 import { ColumnVectorizer, } from './ColumnVectorizer';
+// import { default as natural, } from 'natural';
 
 /**
  * @namespace
@@ -8,5 +8,5 @@ import { ColumnVectorizer, } from './ColumnVectorizer';
 export const nlp = Object.assign({
   ColumnVectorizer,
 },
-  natural
+  // natural
 );
