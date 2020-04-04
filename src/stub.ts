@@ -1,2 +1,9 @@
-const stub = new Error('This is a stub module, please provide window global');
-export default stub;
+import stemmer from 'stemmer';
+const natural = {
+  PorterStemmer: {
+    tokenizeAndStem: (input: string = '')=> {
+      return stemmer(input).split(' ');
+    }
+  }
+};
+export default natural;

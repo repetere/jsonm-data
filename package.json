@@ -1,6 +1,6 @@
 {
   "name": "@modelx/data",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "modelscript is a javascript module with simple and efficient tools for data mining and data analysis in JavaScript. When modelscript used with ML.js, pandas-js, and numjs, you're left with the equivalent R/Python tool set in JavaScript.",
   "main": "dist/index.cjs.js",
   "module": "build/index.js",
@@ -77,6 +77,7 @@
     "@types/react": "^16.9.31",
     "@types/react-dom": "^16.9.6",
     "@types/sinon": "^9.0.0",
+    "@types/stemmer": "^1.0.2",
     "@types/valid-url": "^1.0.3",
     "async_hooks": "^1.0.0",
     "chai": "^4.2.0",
@@ -94,6 +95,7 @@
     "rollup-plugin-node-polyfills": "^0.2.1",
     "rollup-plugin-terser-js": "^1.0.2",
     "sinon": "^9.0.1",
+    "stemmer": "^1.0.5",
     "ts-jest": "^25.3.0",
     "tslib": "^1.11.1",
     "typedoc": "^0.17.3",

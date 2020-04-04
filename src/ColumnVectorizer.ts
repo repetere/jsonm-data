@@ -33,7 +33,6 @@ export class ColumnVectorizer {
     //   throw new Error('NLP requires natural');
     // }
     try {
-      console.log({natural})
       if (typeof nlp.PorterStemmer === 'undefined') {
         Object.assign(nlp, natural);
       }

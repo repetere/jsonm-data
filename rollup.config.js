@@ -182,7 +182,7 @@ function getPlugins({
 
 export default [
   {
-    input: "src/index.web.ts",
+    input: "src/index.ts",
     output: getOutput({
       minify: false,
       server: false,
@@ -207,7 +207,7 @@ export default [
     }),
   },
   {
-    input: "src/index.web.ts",
+    input: "src/index.ts",
     output: getOutput({
       minify: true,
       server: false,
