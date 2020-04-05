@@ -35,4 +35,4 @@ export declare function loadCSV(filepath: string, options?: CSVOptions): Promise
  * @param {Object} [options] - options passed to csvtojson
  * @returns {Object[]} returns an array of objects from a csv where each column header is the property name
  */
-export declare function loadTSV(filepath: string, options?: CSVOptions): Promise<CSVJSONRow[]>;
+export declare function loadTSV(filepath: string, options?: CSVOptions): Promise<CSVJSON>;
