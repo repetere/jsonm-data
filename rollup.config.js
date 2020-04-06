@@ -49,7 +49,7 @@ const windowGlobals = {
 function getOutput({ minify = false, server = false, }) {
   const output = server ?
     [ {
-      file: pkg.cjs,
+      file: pkg.main,
       format: "cjs",
       exports: "named",
       name,
