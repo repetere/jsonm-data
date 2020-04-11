@@ -442,6 +442,21 @@ DataSet.getBinaryValue(false) // => 0
       return 1;
     }
   }
+  config : { [index: string]: any;};
+  data : Data;
+  labels : any;
+  encoders : any;
+  scalers : any;
+  selectColumns :(...args:any[])=>any;
+  columnArray : (...args:any[])=>any;
+  encodeObject : (...args:any[])=>any;
+  oneHotEncoder : (...args:any[])=>any;
+  oneHotDecoder : (...args:any[])=>any;
+  columnMatrix : (...args:any[])=>any;
+  reverseColumnMatrix : (...args:any[])=>any;
+  reverseColumnVector : (...args:any[])=>any;
+  getTransforms : (...args:any[])=>any;
+
   /**
    * creates a new raw data instance for preprocessing data for machine learning
    * @example
@@ -449,7 +464,7 @@ DataSet.getBinaryValue(false) // => 0
    * @param {Object[]} dataset
    * @returns {this} 
    */
-  constructor(data = [], options = {}) {
+  constructor(data:Data = [], options = {}) {
     this.config = Object.assign({
       debug: true,
     }, options);
