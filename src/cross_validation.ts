@@ -1,11 +1,22 @@
 import { MersenneTwister19937, integer, } from 'random-js';
-import { default as range, } from 'lodash.range';
+import range from 'lodash.range';
 import { Matrix, } from 'ml-matrix';
 import { default as ConfusionMatrix, }from 'ml-confusion-matrix';
 import { util, } from './util';
-import { DataSet, } from './DataSet';
+import { DataSet, Data } from './DataSet';
 import { default as jgsl, } from 'js-grid-search-lite';
 const { GridSearch, } = jgsl;
+
+export type TrainTestSplitOptions = {
+  test_size?: number;
+  train_size?: number;
+  random_state?: number;
+  return_array?: boolean;
+  parse_int_train_size?: boolean,
+}
+
+export type TestTrainTuple = [Data, Data];
+export type TestTrainOutput = { train: Data, test:Data, };
 
 /**
  * Split arrays into random train and test subsets
@@ -22,7 +33,7 @@ const trainTestSplit = ms.cross_validation.train_test_split(testArray,{ test_siz
  * @param {boolean} [options.return_array=false] - will return an object {train,test} of the split dataset by default or [train,test] if returned as an array
  * @returns {(Object|array)} returns training and test arrays either as an object or arrays
  */
-function train_test_split(dataset = [], options = {
+function train_test_split(dataset: Data = [], options:TrainTestSplitOptions = {
   test_size: 0.2,
   train_size: 0.8,
   random_state: 0,
@@ -30,15 +41,15 @@ function train_test_split(dataset = [], options = {
   parse_int_train_size: true,
 }) {
   const engine = MersenneTwister19937.seed(options.random_state || 0);
-  const training_set = [];
+  const training_set:Data = [];
   const parse_int_train_size = (typeof options.parse_int_train_size === 'boolean') ? options.parse_int_train_size : true;
   const train_size_length = (options.train_size)
     ? options.train_size * dataset.length
     : (1 - (options.test_size || 0.2)) * dataset.length;
   const train_size = parse_int_train_size
-    ? parseInt(train_size_length, 10)
+    ? parseInt(train_size_length.toString(), 10)
     : train_size_length;
-  const dataset_copy = [].concat(dataset);
+  const dataset_copy:Data = new Array().concat(dataset);
 
   while (training_set.length < train_size) {
     const index = integer(0, (dataset_copy.length - 1))(engine);
@@ -73,9 +84,14 @@ function cross_validation_split(dataset = [], options = {
   const folds = options.folds || 3;
   const dataset_split = [];
   const dataset_copy = [].concat(dataset);
-  const foldsize = parseInt(dataset.length / (folds || 3), 10);
+  const foldLength = dataset.length / (folds || 3);
+  // const foldsize = parseInt(foldLength.toString(), 10);
+  // const foldsizeRounded = Math.floor(foldLength);
+  const foldsize = Math.floor(foldLength);
+
+  // console.log({ foldsize, foldsizeRounded, foldLength });
   for (let i in range(folds)) {
-    const fold = [];
+    const fold:Data = [];
     while (fold.length < foldsize) {
       const index = integer(0, (dataset_copy.length - 1))(engine);
       fold.push(dataset_copy.splice(index, 1)[0]);
@@ -95,7 +111,7 @@ function cross_validation_split(dataset = [], options = {
  * @return {number[]} Array of accucracy calculations 
  */
 function cross_validate_score(options = {}) {
-  const config = Object.assign({}, {
+  const config:any =  {
     // classifier,
     // regression,
     // dataset,
@@ -109,7 +125,8 @@ function cross_validate_score(options = {}) {
     use_train_y_matrix: false,
     use_train_y_vector: false,
     use_estimates_y_vector: false,
-  }, options);
+    ...options
+  };
   const classifier = config.classifier;
   const regression = config.regression;
   const folds = cross_validation_split(config.dataset, {
@@ -180,13 +197,14 @@ function cross_validate_score(options = {}) {
  * @param {function} options.regression - instance of regression model used for training, or function to train a model. e.g. new RandomForestRegression({ nEstimators: 300, }) or ml.MultivariateLinearRegression
  * @return {number[]} Array of accucracy calculations 
  */
-function grid_search(options = {}) {
-  const config = Object.assign({}, {
+function grid_search(options:any = {}) {
+  const config:any = {
     return_parameters: false,
     compare_score:'mean',
     sortAccuracyScore:'desc',
     parameters: {},
-  }, options);
+    ...options
+  };
   const regressor = config.regression;
   const classification = config.classifier;
   const sortAccuracyScore = (!options.sortAccuracyScore && config.regression)
@@ -196,7 +214,7 @@ function grid_search(options = {}) {
   // const scoreSorter = ;
   const gs = new GridSearch({
     params: config.parameters,
-    run_callback: (params) => {
+    run_callback: (params:any) => {
       if (config.regression) {
         config.regression = new regressor(params);
       } else {
@@ -204,14 +222,15 @@ function grid_search(options = {}) {
       }
       const score = cross_validate_score(config);
       return (config.compare_score)
+        //@ts-ignore
         ? util[config.compare_score](score)
         : score;
     },
   });
   gs.run();
   const accuracySorter = (sortAccuracyScore === 'desc')
-    ? (a, b) => b.results - a.results
-    : (a, b) => a.results - b.results;
+    ? (a:any, b:any) => b.results - a.results
+    : (a:any, b:any) => a.results - b.results;
   const results = gs._results.sort(accuracySorter);
   // GridSearch;
   return config.return_parameters

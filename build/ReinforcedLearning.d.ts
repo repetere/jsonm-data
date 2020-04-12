@@ -1,9 +1,25 @@
+import { Vector } from './DataSet';
+export declare type BoundFunction = (bound: number) => number;
+export declare type ReinforcedOptions = {
+    bounds?: number;
+    getBound?: BoundFunction;
+};
+export interface ReinforcedLearning {
+    learn: (...args: any[]) => any;
+    train: (...args: any[]) => any;
+    predict: (...args: any[]) => any;
+}
 /**
  * base interface class for reinforced learning
  * @class ReinforcedLearningBase
  * @memberOf ml
  */
-export declare class ReinforcedLearningBase {
+export declare class ReinforcedLearningBase implements ReinforcedLearning {
+    bounds: number;
+    getBound: BoundFunction;
+    last_selected: Vector;
+    total_reward: number;
+    iteration: number;
     /**
      * base class for reinforced learning
      * @param {Object} [options={}]
@@ -15,7 +31,7 @@ export declare class ReinforcedLearningBase {
      * @prop {Number} this.iteration - total number of iterations
      * @returns {this}
      */
-    constructor(options?: {});
+    constructor(options?: ReinforcedOptions);
     /**
      * interface instance method for reinforced learning step
     */
@@ -35,6 +51,9 @@ export declare class ReinforcedLearningBase {
  * @memberOf ml
  */
 export declare class UpperConfidenceBound extends ReinforcedLearningBase {
+    numbers_of_selections: Map<number, number>;
+    sums_of_rewards: Map<number, number>;
+    bounds: number;
     /**
      * creates a new instance of the Upper confidence bound(UCB) algorithm. UCB is based on the principle of optimism in the face of uncertainty, which is to choose your actions as if the environment (in this case bandit) is as nice as is plausibly possible
      * @see {@link http://banditalgs.com/2016/09/18/the-upper-confidence-bound-algorithm/}
@@ -45,7 +64,7 @@ export declare class UpperConfidenceBound extends ReinforcedLearningBase {
      * @prop {Map} this.sums_of_rewards - successful bound selections
      * @returns {this}
      */
-    constructor(options?: {});
+    constructor(options?: ReinforcedOptions);
     /**
      * returns next action based off of the upper confidence bound
      * @return {number} returns bound selection
@@ -57,7 +76,7 @@ export declare class UpperConfidenceBound extends ReinforcedLearningBase {
      * @param {Function} [getBound=this.getBound] - select value of ucbRow by selection value
      * @return {this}
      */
-    learn(options?: {}): this;
+    learn(options?: any): UpperConfidenceBound;
     /**
      * training method for upper confidence bound calculations
      * @param {Object|Object[]} ucbRow - row of bound selections
@@ -72,6 +91,7 @@ export declare class UpperConfidenceBound extends ReinforcedLearningBase {
  * @memberOf ml
  */
 export declare class ThompsonSampling extends ReinforcedLearningBase {
+    [x: string]: any;
     /**
      * creates a new instance of the Thompson Sampling(TS) algorithm. TS a heuristic for choosing actions that addresses the exploration-exploitation dilemma in the multi-armed bandit problem. It consists in choosing the action that maximizes the expected reward with respect to a randomly drawn belief
      * @see {@link https://en.wikipedia.org/wiki/Thompson_sampling}
@@ -82,7 +102,7 @@ export declare class ThompsonSampling extends ReinforcedLearningBase {
      * @prop {Map} this.numbers_of_rewards_0 - map of all reward 0 selections
      * @returns {this}
      */
-    constructor(options?: {});
+    constructor(options?: any);
     /**
      * returns next action based off of the thompson sampling
      * @return {number} returns thompson sample
@@ -94,7 +114,7 @@ export declare class ThompsonSampling extends ReinforcedLearningBase {
      * @param {Function} [getBound=this.getBound] - select value of tsRow by selection value
      * @return {this}
      */
-    learn(options?: {}): this;
+    learn(options?: any): this;
     /**
      * training method for thompson sampling calculations
      * @param {Object|Object[]} tsRow - row of bound selections

@@ -63,6 +63,7 @@ export class UpperConfidenceBound extends ReinforcedLearningBase {
      */
     constructor(options = {}) {
         super(options);
+        this.bounds = super.bounds;
         this.numbers_of_selections = new Map();
         this.sums_of_rewards = new Map();
         for (let i = 0; i < this.bounds; i++) {
@@ -80,9 +81,12 @@ export class UpperConfidenceBound extends ReinforcedLearningBase {
         let max_upper_bound = 0;
         for (let i = 0; i < this.bounds; i++) {
             let upper_bound = 1e400;
-            if (this.numbers_of_selections.get(i) > 0) {
-                // if selected at least once
+            //@ts-ignore
+            if (typeof this.numbers_of_selections.get(i) !== 'undefined' && this.numbers_of_selections.get(i) > 0) {
+                // if selected at least once 
+                //@ts-ignore
                 let average_reward = this.sums_of_rewards.get(i) / this.numbers_of_selections.get(i);
+                //@ts-ignore
                 let delta_i = Math.sqrt(3 / 2 * Math.log(this.iteration + 1) / this.numbers_of_selections.get(i));
                 upper_bound = average_reward + delta_i;
             }
@@ -103,6 +107,7 @@ export class UpperConfidenceBound extends ReinforcedLearningBase {
         const { ucbRow, getBound, } = options;
         let ad = this.predict();
         this.last_selected.push(ad);
+        //@ts-ignore
         this.numbers_of_selections.set(ad, this.numbers_of_selections.get(ad) + 1);
         let reward = ucbRow[getBound(ad)];
         this.sums_of_rewards.set(ad, this.sums_of_rewards.get(ad) + reward);
@@ -116,6 +121,7 @@ export class UpperConfidenceBound extends ReinforcedLearningBase {
      * @param {Function} [getBound=this.getBound] - select value of ucbRow by selection value
      * @return {this}
      */
+    //@ts-ignore
     train(options) {
         const { ucbRow, getBound = this.getBound, } = options;
         if (Array.isArray(ucbRow)) {
@@ -169,6 +175,7 @@ export class ThompsonSampling extends ReinforcedLearningBase {
         let ad = 0; //ad is each bandit
         let max_random = 0;
         for (let i = 0; i < this.bounds; i++) {
+            //@ts-ignore
             let random_beta = PD.rbeta(1, this.numbers_of_rewards_1.get(i) + 1, this.numbers_of_rewards_0.get(i) + 1);
             if (random_beta > max_random) {
                 max_random = random_beta;
@@ -204,6 +211,7 @@ export class ThompsonSampling extends ReinforcedLearningBase {
      * @param {Function} [getBound=this.getBound] - select value of tsRow by selection value
      * @return {this}
      */
+    //@ts-ignore
     train(options) {
         const { tsRow, getBound = this.getBound, } = options;
         if (Array.isArray(tsRow)) {

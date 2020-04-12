@@ -24,6 +24,39 @@ const transformConfigMap = {
  */
 export class DataSet {
     /**
+     * creates a new raw data instance for preprocessing data for machine learning
+     * @example
+     * const dataset = new ms.DataSet(csvData);
+     * @param {Object[]} dataset
+     * @returns {this}
+     */
+    constructor(data = [], options = {}) {
+        this.config = Object.assign({
+            debug: true,
+        }, options);
+        this.data = [...data,];
+        this.labels = new Map();
+        this.encoders = new Map();
+        this.scalers = new Map();
+        this.selectColumns = DataSet.selectColumns;
+        this.columnArray = DataSet.columnArray;
+        this.encodeObject = DataSet.encodeObject;
+        this.oneHotEncoder = DataSet.oneHotEncoder;
+        this.oneHotDecoder = DataSet.oneHotDecoder;
+        this.columnMatrix = DataSet.columnMatrix;
+        this.reverseColumnMatrix = DataSet.reverseColumnMatrix;
+        this.reverseColumnVector = DataSet.reverseColumnVector;
+        this.getTransforms = DataSet.getTransforms;
+        if (this.config.labels || this.config.encoders || this.config.scalers) {
+            this.importFeatures({
+                labels: this.config.labels,
+                encoders: this.config.encoders,
+                scalers: this.config.scalers,
+            });
+        }
+        return this;
+    }
+    /**
      * Allows for fit transform short hand notation
      * @example
   DataSet.getTransforms({
@@ -220,7 +253,7 @@ export class DataSet {
         const encodedData = config.data || this.oneHotColumnArray(name, config.oneHotColumnArrayOptions);
         // console.log({ encodedData, encoderMap, prefix });
         return encodedData.reduce((result, val) => {
-            const columnNames = Object.keys(val).filter(prop => val[prop] === 1 && (labels.indexOf(prop.replace(prefix, '')) !== -1 || labels.map(label => String(label)).indexOf(prop.replace(prefix, '')) !== -1));
+            const columnNames = Object.keys(val).filter(prop => val[prop] === 1 && (labels.indexOf(prop.replace(prefix, '')) !== -1 || labels.map((label) => String(label)).indexOf(prop.replace(prefix, '')) !== -1));
             const columnName = columnNames[0] || '';
             // console.log({ columnName, columnNames, labels, val},Object.keys(val));
             const datum = {
@@ -229,6 +262,9 @@ export class DataSet {
             result.push(datum);
             return result;
         }, []);
+    }
+    static oneHotColumnArray(name, oneHotColumnArrayOptions) {
+        throw new Error("Method not implemented.");
     }
     /**
      * returns a list of objects with only selected columns as properties
@@ -249,7 +285,7 @@ export class DataSet {
         const data = config.data || this.data;
         return data.reduce((result, val) => {
             const selectedData = {};
-            names.forEach(name => {
+            names.forEach((name) => {
                 selectedData[name] = val[name];
             });
             result.push(selectedData);
@@ -347,7 +383,8 @@ export class DataSet {
             ? vectors
             : vectors.map(vector => [vector, options,]);
         const vectorArrays = columnVectors
-            .map(vec => DataSet.columnArray.call(this, ...vec));
+            //@ts-ignore
+            .map((vec) => DataSet.columnArray.call(this, ...vec));
         return utils.pivotArrays(vectorArrays);
     }
     /**
@@ -403,39 +440,6 @@ export class DataSet {
             default:
                 return 1;
         }
-    }
-    /**
-     * creates a new raw data instance for preprocessing data for machine learning
-     * @example
-     * const dataset = new ms.DataSet(csvData);
-     * @param {Object[]} dataset
-     * @returns {this}
-     */
-    constructor(data = [], options = {}) {
-        this.config = Object.assign({
-            debug: true,
-        }, options);
-        this.data = [...data,];
-        this.labels = new Map();
-        this.encoders = new Map();
-        this.scalers = new Map();
-        this.selectColumns = DataSet.selectColumns;
-        this.columnArray = DataSet.columnArray;
-        this.encodeObject = DataSet.encodeObject;
-        this.oneHotEncoder = DataSet.oneHotEncoder;
-        this.oneHotDecoder = DataSet.oneHotDecoder;
-        this.columnMatrix = DataSet.columnMatrix;
-        this.reverseColumnMatrix = DataSet.reverseColumnMatrix;
-        this.reverseColumnVector = DataSet.reverseColumnVector;
-        this.getTransforms = DataSet.getTransforms;
-        if (this.config.labels || this.config.encoders || this.config.scalers) {
-            this.importFeatures({
-                labels: this.config.labels,
-                encoders: this.config.encoders,
-                scalers: this.config.scalers,
-            });
-        }
-        return this;
     }
     /**
      * returns Object of all encoders and scalers
@@ -553,7 +557,7 @@ export class DataSet {
         let scaleData = config.data || this.columnArray(name, config.columnArrayOptions);
         let scaledData;
         let transforms;
-        scaleData = scaleData.filter(datum => typeof datum !== 'undefined')
+        scaleData = scaleData.filter((datum) => typeof datum !== 'undefined')
             .map((datum, i) => {
             if (typeof datum !== 'number') {
                 if (this.config.debug && config.forced_coercion === false) {
@@ -680,7 +684,7 @@ export class DataSet {
             this.labels.set(name, labels);
         const labeledData = (config.binary) ?
             labelData.map(DataSet.getBinaryValue) :
-            labelData.map(label => labels.get(label));
+            labelData.map((label) => labels.get(label));
         return labeledData;
     }
     /**
@@ -689,10 +693,10 @@ export class DataSet {
        * @param options
        * @returns {array}
        */
-    labelDecode(name, options) {
+    labelDecode(name, options = {}) {
         const config = Object.assign({}, options);
         const labelData = config.data || this.columnArray(name, config.columnArrayOptions);
-        return labelData.map(val => this.labels.get(name).get(val));
+        return labelData.map((val) => this.labels.get(name).get(val));
     }
     /**
      * Return one hot encoded data
@@ -736,7 +740,7 @@ export class DataSet {
         }, options);
         const labels = config.labels || this.encoders.get(name).labels;
         const prefix = config.prefix || this.encoders.get(name).prefix;
-        return this.selectColumns(labels.map(label => `${prefix}${label}`));
+        return this.selectColumns(labels.map((label) => `${prefix}${label}`));
     }
     /**
    * it returns a new column that reduces a column into a new column object, this is used in data prep to create new calculated columns for aggregrate statistics
@@ -825,7 +829,7 @@ export class DataSet {
                 // console.log({encoded})
                 encodedObject = Object.assign({}, encodedObject, encoded[0]);
                 if (config.removeValues) {
-                    removedColumns.push(...this.encoders.get(columnName).labels.map(label => `${this.encoders.get(columnName).prefix}${label}`));
+                    removedColumns.push(...this.encoders.get(columnName).labels.map((label) => `${this.encoders.get(columnName).prefix}${label}`));
                 }
             }
             return encodedObject;
@@ -870,9 +874,9 @@ export class DataSet {
         }, options);
         const removedColumns = [];
         // if (Array.isArray(data)) return data.map(datum => this.transformObject);
-        const encodedColumns = [].concat(...Array.from(this.encoders.keys())
+        const encodedColumns = new Array().concat(...Array.from(this.encoders.keys())
             .map(encodedColumn => this.encoders.get(encodedColumn).labels
-            .map(label => `${this.encoders.get(encodedColumn).prefix}${label}`)));
+            .map((label) => `${this.encoders.get(encodedColumn).prefix}${label}`)));
         const currentColumns = (this.data.length)
             ? Object.keys(this.data[0])
             : Object.keys(data);
@@ -941,13 +945,13 @@ export class DataSet {
             empty: true,
             arrayOptions: {
                 parseFloat: true,
-                filter: val => val,
+                filter: (val) => val,
             },
             labelOptions: {},
         }, options);
-        let replaceVal;
+        let replaceVal; // { [x: string]: any;[x: number]: any; } | undefined;
         let replace = {
-            test: val => !val,
+            test: (val) => !val,
             value: replaceVal,
         };
         switch (config.strategy) {
@@ -1001,7 +1005,7 @@ export class DataSet {
                 replaceVal = this.columnMerge(name, config.mergeData);
                 return replaceVal;
             case 'parseNumber':
-                replaceVal = this.columnArray(name).map(num => Number(num));
+                replaceVal = this.columnArray(name).map((num) => Number(num));
                 return replaceVal;
             default:
                 replaceVal = ArrayStat[config.strategy](this.columnArray(name, config.arrayOptions));
@@ -1056,7 +1060,7 @@ export class DataSet {
             }
             else {
                 Object.keys(replacedColumn).forEach(repColName => {
-                    result[repColName] = replacedColumn[repColName].map(columnVal => ({
+                    result[repColName] = replacedColumn[repColName].map((columnVal) => ({
                         [repColName]: columnVal,
                     }));
                 });

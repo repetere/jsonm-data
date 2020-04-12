@@ -1,0 +1,246 @@
+<html>
+  <head>
+    <title>Data test</title>
+    <script>
+    // const natural={}
+    </script>
+    <script src="../../../dist/index.web.js"></script>
+    <style type="text/css">
+    .result{
+      border:1px solid black;
+      padding:1rem;
+    }
+    </style>
+    <script type="application/javascript">
+    const cacheData={};
+    function setLoadingDom(selector){
+      const el = document.querySelector(selector);
+      el.innerHTML = 'loading';
+      return el;
+    }
+    function updateLoadingDom(el,content){
+      el.innerHTML = JSON.stringify(content ,null,2);
+    }
+    </script>
+  </head>
+  <body>
+    <h1>Data Test</h1>
+    <h2>CSV Tests - ModelXData.csv.loadCSVURI </h2>
+    <pre>ModelXData.csv.loadCSVURI('https://raw.githubusercontent.com/repetere/modelscript/master/test/mock/data.csv')</pre>
+    <script>
+      window.addEventListener('load',()=>{
+        const csvtest1Main = (async function csvtest1Main(){
+          const csvtest1DOM= setLoadingDom('#csvtest1');
+          cacheData.csvtest1 = await ModelXData.csv.loadCSVURI('https://raw.githubusercontent.com/repetere/modelscript/master/test/mock/data.csv');
+          updateLoadingDom(csvtest1DOM,cacheData.csvtest1);
+        })();
+      });
+    </script>
+    <pre id='csvtest1' class="result"></pre>
+    <h2>DataSet Tests</h2>
+    <h3>ModelXData.getBinaryValue</h3>
+    <pre>
+      const CSVDataSet = new ModelXData.DataSet(csvData, { debug: false, }); 
+      CSVDataSet.filterColumn(row => row.Salary.toString() === '83000'))
+    </pre>
+    <pre id='csvtest2' class="result"></pre>
+    <h3>ModelXData.DataSet.selectColumns</h3>
+    <pre>
+      const cols = ['Age', 'Salary', ];
+      const selectedCols = CSVDataSet.selectColumns(cols);
+    </pre>
+    <pre id='csvtest3' class="result"></pre>
+
+    <script>
+      window.addEventListener('load',()=>{
+        (async function csvtest1Main(){
+          const csvtest2DOM= setLoadingDom('#csvtest2');
+          cacheData.csvtest2 = await ModelXData.csv.loadCSVURI('https://raw.githubusercontent.com/repetere/modelscript/master/test/mock/data.csv');
+          const CSVDataSet = new ModelXData.DataSet(cacheData.csvtest2, { debug: false, });
+          updateLoadingDom(csvtest2DOM, CSVDataSet.filterColumn(row => row.Salary.toString() === '83000'));
+
+          const csvtest3DOM= setLoadingDom('#csvtest3');
+          const cols = ['Age', 'Salary', ];
+          const selectedCols = CSVDataSet.selectColumns(cols);
+          updateLoadingDom(csvtest3DOM, selectedCols);
+        })();
+      });
+    </script>
+    <h2>ModelXData.nlp</h2>
+    <h3>ModelXData.nlp.ColumnVectorizer</h3>
+    <pre>
+const csvData = [
+  {
+    'Review': 'This is really good',
+    'Liked': 1,
+  },
+  {
+    'Review': 'I would definitely recommend',
+    'Liked': 1,
+  },
+  {
+    'Review': 'The wait staff was really rude',
+    'Liked': 0,
+  },
+  {
+    'Review': 'Great views',
+    'Liked': 1,
+  },
+  {
+    'Review': 'the food was not great',
+    'Liked': 0,
+  },
+  {
+    'Review': 'food came out cold, took forever to get seated',
+    'Liked': 0,
+  },
+  {
+    'Review': 'we had a great time, and they were really prompt and attentive',
+    'Liked': 1,
+  },
+  {
+    'Review': 'the food was bland',
+    'Liked': 0,
+  },
+  {
+    'Review': 'not very flavorful',
+    'Liked': 0,
+  },
+  {
+    'Review': 'it was kind of so-so',
+    'Liked': 0,
+  },
+];
+const eVString = 'I would rate everything Great, views Great, food Great';
+const CSVDataSet = new ModelXData.DataSet(csvData);
+const nlpVectors = new ModelXData.nlp.ColumnVectorizer({
+  data: CSVDataSet.columnArray('Review'),
+  maxFeatures: 9,
+});
+nlpVectors.fit_transform();
+    </pre>
+    <pre id='csvtest4' class="result"></pre>
+
+    <script>
+      window.addEventListener('load',()=>{
+        (async function csvtest1Main(){
+        const csvtest4DOM= setLoadingDom('#csvtest4');
+          const csvData = [
+            {
+              'Review': 'This is really good',
+              'Liked': 1,
+            },
+            {
+              'Review': 'I would definitely recommend',
+              'Liked': 1,
+            },
+            {
+              'Review': 'The wait staff was really rude',
+              'Liked': 0,
+            },
+            {
+              'Review': 'Great views',
+              'Liked': 1,
+            },
+            {
+              'Review': 'the food was not great',
+              'Liked': 0,
+            },
+            {
+              'Review': 'food came out cold, took forever to get seated',
+              'Liked': 0,
+            },
+            {
+              'Review': 'we had a great time, and they were really prompt and attentive',
+              'Liked': 1,
+            },
+            {
+              'Review': 'the food was bland',
+              'Liked': 0,
+            },
+            {
+              'Review': 'not very flavorful',
+              'Liked': 0,
+            },
+            {
+              'Review': 'it was kind of so-so',
+              'Liked': 0,
+            },
+          ];
+          const eVString = 'I would rate everything Great, views Great, food Great';
+          const CSVDataSet = new ModelXData.DataSet(csvData);
+          const nlpVectors = new ModelXData.nlp.ColumnVectorizer({
+            data: CSVDataSet.columnArray('Review'),
+            maxFeatures: 9,
+          });
+          nlpVectors.fit_transform();
+          updateLoadingDom(csvtest4DOM, nlpVectors);
+
+          // csvtest3DOM= setLoadingDom('#csvtest3');
+          // const cols = ['Age', 'Salary', ];
+          // const selectedCols = CSVDataSet.selectColumns(cols);
+          // updateLoadingDom(csvtest3DOM, selectedCols);
+        })();
+      });
+    </script>
+    <h2>ModelXData.cross_validation</h2>
+    <h3>ModelXData.cross_validation.train_test_split</h3>
+    <pre>
+      const testArray = [20, 25, 10, 33, 50, 42, 19, 34, 90, 23, ];
+      const defaultTrainTestSplitSize = ModelXData.cross_validation.train_test_split(testArray, { test_size: 0.4, });
+      const { train, test, } = defaultTrainTestSplitSize;
+      expect(train.length).to.equal(6);
+    </pre>
+    <script>
+      window.addEventListener('load',()=>{
+        (async function csvtest1Main(){
+          const csvtest5DOM= setLoadingDom('#csvtest5');
+          const testArray = [20, 25, 10, 33, 50, 42, 19, 34, 90, 23, ];
+          const defaultTrainTestSplitSize = ModelXData.cross_validation.train_test_split(testArray, { test_size: 0.4, });
+          const { train, test, } = defaultTrainTestSplitSize;
+          updateLoadingDom(csvtest5DOM, { train, test, } );
+
+        })();
+      });
+    </script>
+    <pre id='csvtest5' class="result"></pre>
+    <h2>ModelXData.calc</h2>
+    <h3>ModelXData.calc.assocationRuleLearning</h3>
+    <pre>
+      const rawTransactions = [
+        ['Cookies', 'Milk', 'Plates', ],
+        ['Cups', 'Milk', 'Silverware', ],
+        ['Cookies', 'Cups', 'Milk', 'Silverware', ],
+        ['Cups', 'Silverware', ],
+        ['Cookies', 'Cups', 'Milk', 'Silverware', ],
+      ];
+      const gt = ModelXData.calc.getTransactions(rawTransactions);
+      const arl = await ModelXData.calc.assocationRuleLearning(gt.transactions, {
+        valuesMap: gt.valuesMap,
+      });
+    </pre>
+    <script>
+      window.addEventListener('load',()=>{
+        (async function csvtest1Main(){
+          const csvtest6DOM= setLoadingDom('#csvtest6');
+          const rawTransactions = [
+            ['Cookies', 'Milk', 'Plates', ],
+            ['Cups', 'Milk', 'Silverware', ],
+            ['Cookies', 'Cups', 'Milk', 'Silverware', ],
+            ['Cups', 'Silverware', ],
+            ['Cookies', 'Cups', 'Milk', 'Silverware', ],
+          ];
+          const gt = ModelXData.calc.getTransactions(rawTransactions);
+          const arl = await ModelXData.calc.assocationRuleLearning(gt.transactions, {
+            valuesMap: gt.valuesMap,
+          });
+          updateLoadingDom(csvtest6DOM, { gt, arl, } );
+
+        })();
+      });
+    </script>
+    <pre id='csvtest6' class="result"></pre>
+
+    <!-- <script type="application/javascript" async src="/Users/yawjosephetse/Developer/github/repetere/natural/dist/index.web.js"></script> -->
+  </body>
+</html>

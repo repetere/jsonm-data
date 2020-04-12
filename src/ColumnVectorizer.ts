@@ -2,7 +2,11 @@
 import { default as natural, } from 'natural';
 import { nlp, } from './nlp';
 // import { util as utils, } from './util';
-import { DataSet, } from './DataSet';
+import {Vector, Matrix, DataSet, } from './DataSet';
+
+export type WordMap = {
+  [index: string]: number;
+};
 // console.log({ natural });
 // export const nat = natural;
 /**
@@ -11,6 +15,16 @@ import { DataSet, } from './DataSet';
  * @memberOf nlp
  */
 export class ColumnVectorizer {
+  data:string[];
+  tokens:Set<string>;
+  vectors:WordMap[];
+  wordMap: WordMap;
+  wordCountMap: WordMap;
+  maxFeatures?:number;
+  sortedWordCount:string[];
+  limitedFeatures:string[][];
+  matrix:Matrix;
+  replacer: (value:string) => string;
   /**
    * creates a new instance for classifying text data for machine learning
    * @example
@@ -28,7 +42,7 @@ export class ColumnVectorizer {
    * @prop {Function} this.replacer - clean string function
    * @returns {this} 
    */
-  constructor(options = {}) {
+  constructor(options:{data?:string[],maxFeatures?:number} = {}) {
     // if (typeof window !== 'undefined' && (typeof window.natural === 'undefined' ||  typeof natural==='undefined')) {
     //   throw new Error('NLP requires natural');
     // }
@@ -62,14 +76,14 @@ export class ColumnVectorizer {
    * Returns a distinct array of all tokens
    * @return {String[]} returns a distinct array of all tokens
   */
-  get_tokens() {
+  get_tokens():string[] {
     return Array.from(this.tokens);
   }
   /** 
    * Returns array of arrays of strings for dependent features from sparse matrix word map
    * @return {String[]} returns array of dependent features for DataSet column matrics
   */
-  get_vector_array() {
+  get_vector_array():string[][] {
     return this.get_tokens().map(tok => [
       tok,
     ]);
@@ -79,10 +93,10 @@ export class ColumnVectorizer {
    * @param {Object} options 
    * @param {Object[]} options.data - array of corpus data 
    */
-  fit_transform(options = {}) {
+  fit_transform(options: { data?: string[]; maxFeatures?: number; } = {}) {
     const data = options.data || this.data;
-    data.forEach(datum => {
-      const datums = {};
+    data.forEach((datum:string) => {
+      const datums:WordMap = {};
       this.replacer(datum)
         .split(' ')
         .forEach(tok => {
@@ -97,15 +111,16 @@ export class ColumnVectorizer {
         });
       this.vectors.push(datums);
     });
-    this.wordMap = Array.from(this.tokens).reduce((result, value) => { 
+    this.wordMap = Array.from(this.tokens).reduce((result:WordMap, value) => { 
       result[ value ] = 0;
       return result;
     }, {});
     this.sortedWordCount = Object.keys(this.wordCountMap)
       .sort((a, b) => this.wordCountMap[ b ] - this.wordCountMap[ a ]);
     this.vectors = this.vectors.map(vector => Object.assign({}, this.wordMap, vector));
+
     const vectorData = new DataSet(this.vectors);
-    this.limitedFeatures = this.get_limited_features(options);
+    this.limitedFeatures = this.get_limited_features(options) as string[][];
     this.matrix = vectorData.columnMatrix(this.limitedFeatures);
     return this.matrix;
   }
@@ -114,7 +129,7 @@ export class ColumnVectorizer {
    * @param {*} options 
    * @param {number} options.maxFeatures - max number of features 
    */
-  get_limited_features(options = {}) {
+  get_limited_features(options: { maxFeatures?: number; } = {}):string[][] {
     const maxFeatures = options.maxFeatures || this.maxFeatures || this.tokens.size;
  
     return this.sortedWordCount
@@ -148,9 +163,9 @@ ColumnVectorizer.evaluateString('I would rate everything Great, views Great, foo
    * @param {String} testString 
    * @return {Object} object of corpus words with accounts
    */
-  evaluateString(testString = '') {
+  evaluateString(testString = ''): WordMap {
     const evalString = this.replacer(testString);
-    const evalStringWordMap = evalString.split(' ').reduce((result, value) => { 
+    const evalStringWordMap = evalString.split(' ').reduce((result:WordMap, value) => { 
       if (this.tokens.has(value)) {
         result[ value ] = (result[ value ]!==undefined)
           ? result[ value ] + 1
@@ -158,7 +173,11 @@ ColumnVectorizer.evaluateString('I would rate everything Great, views Great, foo
       }
       return result;
     }, {});
-    return Object.assign({}, this.wordMap, evalStringWordMap);
+    return {
+      ...this.wordMap,
+      ...evalStringWordMap,
+    };
+    // return Object.assign({}, this.wordMap, evalStringWordMap);
   }
   /**
    * returns new matrix of words with counts in columns
@@ -167,7 +186,7 @@ ColumnVectorizer.evaluate('I would rate everything Great, views Great, food Grea
    * @param {String} testString 
    * @return {number[][]} sparse matrix row for new classification predictions
    */
-  evaluate(testString='', options) {
+  evaluate(testString='', options:{maxFeatures?:number}) {
     const stringObj = this.evaluateString(testString);
     const limitedFeatures = this.get_limited_features(options);
     const vectorData = new DataSet([

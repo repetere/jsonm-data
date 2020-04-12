@@ -6,10 +6,10 @@
  * @param {Boolean} [options.exludeEmptyTranscations=true] - exclude empty rows of transactions
  * @returns {Object} {values - unique list of all values, valuesMap - map of values and labels, transactions - formatted sparse array}
  */
-export declare function getTransactions(data: any, options: any): {
+export declare function getTransactions(data: any[], options: any): {
     values: Set<unknown>;
     valuesMap: Map<any, any>;
-    transactions: any;
+    transactions: any[][];
 };
 /**
  * returns association rule learning results

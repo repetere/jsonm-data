@@ -1,11 +1,28 @@
 import { default as PD, } from 'probability-distributions';
+import {Vector, Matrix, DataSet, } from './DataSet';
 
+export type BoundFunction = (bound: number) => number;
+export type ReinforcedOptions = {
+  bounds?: number;
+  getBound?: BoundFunction;
+} 
+
+export interface ReinforcedLearning{
+  learn: (...args:any[]) => any;
+  train: (...args:any[]) => any;
+  predict: (...args:any[]) => any;
+}
 /**
  * base interface class for reinforced learning
  * @class ReinforcedLearningBase
  * @memberOf ml
  */
-export class ReinforcedLearningBase{
+export class ReinforcedLearningBase implements ReinforcedLearning{
+  bounds:number;
+  getBound:BoundFunction;
+  last_selected:Vector;
+  total_reward: number;
+  iteration: number;
   /**
    * base class for reinforced learning
    * @param {Object} [options={}]
@@ -17,7 +34,7 @@ export class ReinforcedLearningBase{
    * @prop {Number} this.iteration - total number of iterations
    * @returns {this} 
    */
-  constructor(options = {}) {
+  constructor(options: ReinforcedOptions = {}) {
     this.bounds = options.bounds || 5;
     this.getBound = options.getBound || function getBound(bound) {
       return bound;
@@ -53,6 +70,9 @@ export class ReinforcedLearningBase{
  * @memberOf ml
  */
 export class UpperConfidenceBound extends ReinforcedLearningBase{
+  numbers_of_selections:Map<number,number>;
+  sums_of_rewards:Map<number,number>;
+  bounds: number;
   /**
    * creates a new instance of the Upper confidence bound(UCB) algorithm. UCB is based on the principle of optimism in the face of uncertainty, which is to choose your actions as if the environment (in this case bandit) is as nice as is plausibly possible
    * @see {@link http://banditalgs.com/2016/09/18/the-upper-confidence-bound-algorithm/}
@@ -63,8 +83,9 @@ export class UpperConfidenceBound extends ReinforcedLearningBase{
    * @prop {Map} this.sums_of_rewards - successful bound selections
    * @returns {this} 
    */
-  constructor(options = {}) {
+  constructor(options: ReinforcedOptions = {}) {
     super(options);
+    this.bounds = super.bounds;
     this.numbers_of_selections = new Map();
     this.sums_of_rewards = new Map();
     for (let i = 0; i < this.bounds; i++){
@@ -77,14 +98,17 @@ export class UpperConfidenceBound extends ReinforcedLearningBase{
    * returns next action based off of the upper confidence bound
    * @return {number} returns bound selection
    */
-  predict() {
+  predict(): number {
     let ad = 0; //ad is each bandit
     let max_upper_bound = 0;
     for (let i = 0; i < this.bounds; i++){
       let upper_bound = 1e400;
-      if (this.numbers_of_selections.get( i ) > 0) {
-        // if selected at least once
-        let average_reward = this.sums_of_rewards.get( i ) / this.numbers_of_selections.get( i );
+      //@ts-ignore
+      if (typeof this.numbers_of_selections.get( i )!=='undefined' && this.numbers_of_selections.get( i ) > 0) {
+        // if selected at least once 
+        //@ts-ignore
+        let average_reward = this.sums_of_rewards.get(i) / this.numbers_of_selections.get(i);
+        //@ts-ignore
         let delta_i = Math.sqrt(3 / 2 * Math.log(this.iteration + 1) / this.numbers_of_selections.get( i ));
         upper_bound = average_reward + delta_i;
       } 
@@ -101,10 +125,11 @@ export class UpperConfidenceBound extends ReinforcedLearningBase{
    * @param {Function} [getBound=this.getBound] - select value of ucbRow by selection value
    * @return {this} 
    */
-  learn(options={}) {
+  learn(options:any={}): UpperConfidenceBound {
     const { ucbRow, getBound, } = options;
     let ad = this.predict();
     this.last_selected.push(ad);
+    //@ts-ignore
     this.numbers_of_selections.set(ad,  this.numbers_of_selections.get(ad) + 1);
     let reward = ucbRow[getBound(ad)];
     this.sums_of_rewards.set(ad,  this.sums_of_rewards.get(ad) + reward);
@@ -118,7 +143,8 @@ export class UpperConfidenceBound extends ReinforcedLearningBase{
    * @param {Function} [getBound=this.getBound] - select value of ucbRow by selection value
    * @return {this} 
    */
-  train(options) {
+  //@ts-ignore
+  train(options:any) {
     const {
       ucbRow,
       getBound = this.getBound,
@@ -145,7 +171,8 @@ export class UpperConfidenceBound extends ReinforcedLearningBase{
  * @class ThompsonSampling
  * @memberOf ml
  */
-export class ThompsonSampling extends ReinforcedLearningBase{
+export class ThompsonSampling extends ReinforcedLearningBase {
+  [x: string]: any;
   /**
    * creates a new instance of the Thompson Sampling(TS) algorithm. TS a heuristic for choosing actions that addresses the exploration-exploitation dilemma in the multi-armed bandit problem. It consists in choosing the action that maximizes the expected reward with respect to a randomly drawn belief
    * @see {@link https://en.wikipedia.org/wiki/Thompson_sampling}
@@ -156,7 +183,7 @@ export class ThompsonSampling extends ReinforcedLearningBase{
    * @prop {Map} this.numbers_of_rewards_0 - map of all reward 0 selections
    * @returns {this} 
    */
-  constructor(options = {}) {
+  constructor(options: any = {}) {
     super(options);
     this.numbers_of_rewards_1 = new Map();
     this.numbers_of_rewards_0 = new Map();
@@ -170,11 +197,12 @@ export class ThompsonSampling extends ReinforcedLearningBase{
    * returns next action based off of the thompson sampling
    * @return {number} returns thompson sample
    */
-  predict() {
+  predict(): number {
     let ad = 0; //ad is each bandit
     let max_random = 0;
     for (let i = 0; i < this.bounds; i++){
-      let random_beta = PD.rbeta(1, this.numbers_of_rewards_1.get(i) + 1, this.numbers_of_rewards_0.get(i) + 1);
+      //@ts-ignore
+      let random_beta:number = PD.rbeta(1, this.numbers_of_rewards_1.get(i) + 1, this.numbers_of_rewards_0.get(i) + 1);
       if (random_beta > max_random) {
         max_random = random_beta;
         ad = i;
@@ -188,7 +216,7 @@ export class ThompsonSampling extends ReinforcedLearningBase{
    * @param {Function} [getBound=this.getBound] - select value of tsRow by selection value
    * @return {this} 
    */
-  learn(options = {}) {
+  learn(options:any = {}) {
     const { tsRow, getBound, } = options;
     let ad = this.predict();
     this.last_selected.push(ad);
@@ -208,7 +236,8 @@ export class ThompsonSampling extends ReinforcedLearningBase{
    * @param {Function} [getBound=this.getBound] - select value of tsRow by selection value
    * @return {this} 
    */
-  train(options) {
+  //@ts-ignore
+  train(options: any) {
     const {
       tsRow,
       getBound = this.getBound,

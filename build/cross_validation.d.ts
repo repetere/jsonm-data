@@ -1,3 +1,16 @@
+import { Data } from './DataSet';
+export declare type TrainTestSplitOptions = {
+    test_size?: number;
+    train_size?: number;
+    random_state?: number;
+    return_array?: boolean;
+    parse_int_train_size?: boolean;
+};
+export declare type TestTrainTuple = [Data, Data];
+export declare type TestTrainOutput = {
+    train: Data;
+    test: Data;
+};
 /**
  * Split arrays into random train and test subsets
  * @memberOf cross_validation
@@ -13,15 +26,9 @@ const trainTestSplit = ms.cross_validation.train_test_split(testArray,{ test_siz
  * @param {boolean} [options.return_array=false] - will return an object {train,test} of the split dataset by default or [train,test] if returned as an array
  * @returns {(Object|array)} returns training and test arrays either as an object or arrays
  */
-declare function train_test_split(dataset?: never[], options?: {
-    test_size: number;
-    train_size: number;
-    random_state: number;
-    return_array: boolean;
-    parse_int_train_size: boolean;
-}): any[][] | {
-    train: any[];
-    test: never[];
+declare function train_test_split(dataset?: Data, options?: TrainTestSplitOptions): Data[] | {
+    train: Data;
+    test: Data;
 };
 /**
  * Provides train/test indices to split data in train/test sets. Split dataset into k consecutive folds.
@@ -40,7 +47,7 @@ const crossValidationArrayKFolds = ms.cross_validation.cross_validation_split(te
 declare function cross_validation_split(dataset?: never[], options?: {
     folds: number;
     random_state: number;
-}): any[][];
+}): Data[];
 /**
  * Used to test variance and bias of a prediction
  * @memberOf cross_validation
@@ -58,7 +65,7 @@ declare function cross_validate_score(options?: {}): any[];
  * @param {function} options.regression - instance of regression model used for training, or function to train a model. e.g. new RandomForestRegression({ nEstimators: 300, }) or ml.MultivariateLinearRegression
  * @return {number[]} Array of accucracy calculations
  */
-declare function grid_search(options?: {}): any;
+declare function grid_search(options?: any): any;
 /**
  * @see {@link https://machinelearningmastery.com/implement-resampling-methods-scratch-python/}
  */

@@ -1,11 +1,11 @@
 import { array as ArrayStat, } from 'ml-stat';
-import { default as range, } from 'lodash.range';
-import { default as rangeRight, } from 'lodash.rangeright';
+import range from 'lodash.range';
+import rangeRight from 'lodash.rangeright';
 const avg = ArrayStat.mean;
 const mean = avg;
 const sum = ArrayStat.sum;
 const scale = (a, d) => a.map(x => (x - avg(a)) / d);
-const max = a => a.concat([]).sort((x, y) => x < y)[0];
+const max = (a) => a.concat([]).sort((x, y) => x < y)[0];
 const min = a => a.concat([]).sort((x, y) => x > y)[0];
 const sd = ArrayStat.standardDeviation; //(a, av) => Math.sqrt(avg(a.map(x => (x - av) * x)));
 /**
@@ -119,7 +119,7 @@ r2.toFixed(3) // => 0.922
  * @param {Number} options.independentVariables - the number of independent variables in the regression equation
  * @returns {Number} adjusted r^2 for multiple linear regression
  */
-function adjustedCoefficentOfDetermination(options = {}) {
+function adjustedCoefficentOfDetermination(options) {
     const { actuals, estimates, rSquared, independentVariables, sampleSize, } = options;
     const r2 = rSquared || coefficientOfDetermination(actuals, estimates);
     const n = sampleSize || actuals.length;
@@ -220,6 +220,7 @@ function pivotArrays(arrays = []) {
         })
         : arrays;
 }
+////Vector, Matrix,
 /**
   * Standardize features by removing the mean and scaling to unit variance
 

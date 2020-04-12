@@ -1,9 +1,9 @@
 import { MersenneTwister19937, integer, } from 'random-js';
-import { default as range, } from 'lodash.range';
+import range from 'lodash.range';
 import { Matrix, } from 'ml-matrix';
 import { default as ConfusionMatrix, } from 'ml-confusion-matrix';
 import { util, } from './util';
-import { DataSet, } from './DataSet';
+import { DataSet } from './DataSet';
 import { default as jgsl, } from 'js-grid-search-lite';
 const { GridSearch, } = jgsl;
 /**
@@ -35,9 +35,9 @@ function train_test_split(dataset = [], options = {
         ? options.train_size * dataset.length
         : (1 - (options.test_size || 0.2)) * dataset.length;
     const train_size = parse_int_train_size
-        ? parseInt(train_size_length, 10)
+        ? parseInt(train_size_length.toString(), 10)
         : train_size_length;
-    const dataset_copy = [].concat(dataset);
+    const dataset_copy = new Array().concat(dataset);
     while (training_set.length < train_size) {
         const index = integer(0, (dataset_copy.length - 1))(engine);
         // console.log({ index });
@@ -70,7 +70,11 @@ function cross_validation_split(dataset = [], options = {
     const folds = options.folds || 3;
     const dataset_split = [];
     const dataset_copy = [].concat(dataset);
-    const foldsize = parseInt(dataset.length / (folds || 3), 10);
+    const foldLength = dataset.length / (folds || 3);
+    // const foldsize = parseInt(foldLength.toString(), 10);
+    // const foldsizeRounded = Math.floor(foldLength);
+    const foldsize = Math.floor(foldLength);
+    // console.log({ foldsize, foldsizeRounded, foldLength });
     for (let i in range(folds)) {
         const fold = [];
         while (fold.length < foldsize) {
@@ -90,7 +94,7 @@ function cross_validation_split(dataset = [], options = {
  * @return {number[]} Array of accucracy calculations
  */
 function cross_validate_score(options = {}) {
-    const config = Object.assign({}, {
+    const config = {
         // classifier,
         // regression,
         // dataset,
@@ -104,7 +108,8 @@ function cross_validate_score(options = {}) {
         use_train_y_matrix: false,
         use_train_y_vector: false,
         use_estimates_y_vector: false,
-    }, options);
+        ...options
+    };
     const classifier = config.classifier;
     const regression = config.regression;
     const folds = cross_validation_split(config.dataset, {
@@ -178,12 +183,13 @@ function cross_validate_score(options = {}) {
  * @return {number[]} Array of accucracy calculations
  */
 function grid_search(options = {}) {
-    const config = Object.assign({}, {
+    const config = {
         return_parameters: false,
         compare_score: 'mean',
         sortAccuracyScore: 'desc',
         parameters: {},
-    }, options);
+        ...options
+    };
     const regressor = config.regression;
     const classification = config.classifier;
     const sortAccuracyScore = (!options.sortAccuracyScore && config.regression)
@@ -201,6 +207,7 @@ function grid_search(options = {}) {
             }
             const score = cross_validate_score(config);
             return (config.compare_score)
+                //@ts-ignore
                 ? util[config.compare_score](score)
                 : score;
         },

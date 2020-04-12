@@ -1,9 +1,23 @@
+import { Matrix } from './DataSet';
+export declare type WordMap = {
+    [index: string]: number;
+};
 /**
  * class creating sparse matrices from a corpus
  * @class ColumnVectorizer
  * @memberOf nlp
  */
 export declare class ColumnVectorizer {
+    data: string[];
+    tokens: Set<string>;
+    vectors: WordMap[];
+    wordMap: WordMap;
+    wordCountMap: WordMap;
+    maxFeatures?: number;
+    sortedWordCount: string[];
+    limitedFeatures: string[][];
+    matrix: Matrix;
+    replacer: (value: string) => string;
     /**
      * creates a new instance for classifying text data for machine learning
      * @example
@@ -21,29 +35,37 @@ export declare class ColumnVectorizer {
      * @prop {Function} this.replacer - clean string function
      * @returns {this}
      */
-    constructor(options?: {});
+    constructor(options?: {
+        data?: string[];
+        maxFeatures?: number;
+    });
     /**
      * Returns a distinct array of all tokens
      * @return {String[]} returns a distinct array of all tokens
     */
-    get_tokens(): unknown[];
+    get_tokens(): string[];
     /**
      * Returns array of arrays of strings for dependent features from sparse matrix word map
      * @return {String[]} returns array of dependent features for DataSet column matrics
     */
-    get_vector_array(): unknown[][];
+    get_vector_array(): string[][];
     /**
      * Fits and transforms data by creating column vectors (a sparse matrix where each row has every word in the corpus as a column and the count of appearances in the corpus)
      * @param {Object} options
      * @param {Object[]} options.data - array of corpus data
      */
-    fit_transform(options?: {}): any;
+    fit_transform(options?: {
+        data?: string[];
+        maxFeatures?: number;
+    }): Matrix;
     /**
      * Returns limited sets of dependent features or all dependent features sorted by word count
      * @param {*} options
      * @param {number} options.maxFeatures - max number of features
      */
-    get_limited_features(options?: {}): any;
+    get_limited_features(options?: {
+        maxFeatures?: number;
+    }): string[][];
     /**
      * returns word map with counts
      * @example
@@ -71,7 +93,7 @@ export declare class ColumnVectorizer {
      * @param {String} testString
      * @return {Object} object of corpus words with accounts
      */
-    evaluateString(testString?: string): any;
+    evaluateString(testString?: string): WordMap;
     /**
      * returns new matrix of words with counts in columns
      * @example
@@ -79,5 +101,7 @@ export declare class ColumnVectorizer {
      * @param {String} testString
      * @return {number[][]} sparse matrix row for new classification predictions
      */
-    evaluate(testString: string | undefined, options: any): any;
+    evaluate(testString: string | undefined, options: {
+        maxFeatures?: number;
+    }): any;
 }

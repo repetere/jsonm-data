@@ -1,14 +1,21 @@
 import { array as ArrayStat, } from 'ml-stat';
-import { default as range, } from 'lodash.range';
-import { default as rangeRight, } from 'lodash.rangeright';
+import  range from 'lodash.range';
+import  rangeRight from 'lodash.rangeright';
+import { Vector, Matrix, } from './DataSet';
 
-const avg = ArrayStat.mean;
+export interface ArrayCalculation {
+  (numbers: number[]): number;
+}
+export interface ArraySort {
+  (num: number[]): any;
+}
+const avg:ArrayCalculation = ArrayStat.mean;
 const mean = avg;
-const sum = ArrayStat.sum;
-const scale = (a, d) => a.map(x => (x - avg(a)) / d);
-const max = a => a.concat([]).sort((x, y) => x < y)[0];
-const min = a => a.concat([]).sort((x, y) => x > y)[0];
-const sd = ArrayStat.standardDeviation; //(a, av) => Math.sqrt(avg(a.map(x => (x - av) * x)));
+const sum:ArrayCalculation = ArrayStat.sum;
+const scale = (a:number[], d:number) => a.map(x => (x - avg(a)) / d);
+const max:ArraySort = (a:number[]) => a.concat([]).sort((x:number, y:number):any => x < y)[0];
+const min:ArraySort = a => a.concat([]).sort((x, y):any => x > y)[0];
+const sd:ArrayCalculation = ArrayStat.standardDeviation; //(a, av) => Math.sqrt(avg(a.map(x => (x - av) * x)));
 
 
 /**
@@ -18,8 +25,8 @@ const sd = ArrayStat.standardDeviation; //(a, av) => Math.sqrt(avg(a.map(x => (x
  * @param {Number[]} right 
  * @returns {Number[]} Squared difference of left minus right array
  */
-function squaredDifference(left, right) {
-  return left.reduce((result, val, index, arr) => { 
+function squaredDifference(left:number[], right:number[]): number[] {
+  return left.reduce((result:number[], val, index, arr) => { 
     result.push(Math.pow((right[index]-val), 2));
     return result;
   }, []);
@@ -38,7 +45,7 @@ function squaredDifference(left, right) {
  * @param {Number[]} estimates - estimates values
  * @returns {Number} Standard Error of the Estimate
  */
-function standardError(actuals=[], estimates=[]) {
+function standardError(actuals: number[]=[], estimates: number[]=[]): number {
   if (actuals.length !== estimates.length) throw new RangeError('arrays must have the same length');
   const squaredDiff = squaredDifference(actuals, estimates);
   return Math.sqrt((sum(squaredDiff)) / (actuals.length - 2));
@@ -51,7 +58,7 @@ function standardError(actuals=[], estimates=[]) {
  * @param {Number[]} observations - An array like object containing the sample data.
  * @returns {Number[]} The z-scores, standardized by mean and standard deviation of input array 
  */
-function standardScore(observations = []) {
+function standardScore(observations: number[] = []): number[] {
   const mean = avg(observations);
   const stdDev = sd(observations);
   return observations.map(x => ((x - mean) / stdDev));
@@ -71,15 +78,15 @@ r2.toFixed(1) // => 0.6
  * @param {Number[]} estimates - estimates values
  * @returns {Number} r^2
  */
-function coefficientOfDetermination(actuals = [], estimates = []) {
+function coefficientOfDetermination(actuals:number[] = [], estimates:number[] = []): number {
   if (actuals.length !== estimates.length) throw new RangeError('arrays must have the same length');
   const actualsMean = mean(actuals);
 
-  const totalVariation = sum(actuals.reduce((result, val, index) => {
+  const totalVariation = sum(actuals.reduce((result:number[], val, index) => {
     result.push(Math.pow((actuals[index]-actualsMean), 2));
     return result;
   }, []));
-  const unexplainedVariation = sum(actuals.reduce((result, val, index) => {
+  const unexplainedVariation = sum(actuals.reduce((result:number[], val, index) => {
     result.push(Math.pow((actuals[ index ] - estimates[ index ]), 2));
     return result;
   }, []));
@@ -126,7 +133,9 @@ r2.toFixed(3) // => 0.922
  * @param {Number} options.independentVariables - the number of independent variables in the regression equation
  * @returns {Number} adjusted r^2 for multiple linear regression
  */
-function adjustedCoefficentOfDetermination(options = {}) {
+function adjustedCoefficentOfDetermination(options: {
+  actuals: number[]; estimates: number[]; rSquared: number; independentVariables: number; sampleSize: number;
+}): number {
   const { actuals, estimates, rSquared, independentVariables, sampleSize, } = options;
   const r2 = rSquared || coefficientOfDetermination(actuals, estimates);
   const n = sampleSize || actuals.length;
@@ -148,7 +157,7 @@ R.toFixed(4) // => 0.9408
  * @param {Number[]} estimates - estimates values
  * @returns {Number} R
  */
-function coefficientOfCorrelation(actuals = [], estimates = []) {
+function coefficientOfCorrelation(actuals: number[] = [], estimates: number[] = []): number {
   if (actuals.length !== estimates.length) throw new RangeError('arrays must have the same length');
   const sumX = sum(actuals);
   const sumY = sum(estimates);
@@ -181,10 +190,9 @@ function coefficientOfCorrelation(actuals = [], estimates = []) {
  * @param {Number[]}  [estimates=[]]  
  * @returns {Number} r^2
  */
-function rSquared(actuals = [], estimates=[]) {
+function rSquared(actuals: number[] = [], estimates: number[]=[]): number {
   return Math.pow(coefficientOfCorrelation(actuals, estimates), 2);
 }
-
 /**
  * returns an array of vectors as an array of arrays
  * @example
@@ -194,8 +202,8 @@ const arrays = pivotVector(vectors); // => [ [1,2,3,3], [2,2,3,3], [3,3,4,3] ];
  * @param {Array[]} vectors 
  * @returns {Array[]}
  */
-function pivotVector(vectors = []) {
-  return vectors.reduce((result, val, index/*, arr*/) => {
+function pivotVector(vectors: Array<any>[] = []):Matrix {
+  return vectors.reduce((result:Matrix, val:Vector, index/*, arr*/) => {
     val.forEach((vecVal, i) => {
       (index === 0)
         ? (result.push([vecVal, ]))
@@ -224,10 +232,10 @@ function pivotVector(vectors = []) {
   * @param {Array} [vectors=[]] - array of arguments for columnArray to merge columns into a matrix
   * @returns {Array} a matrix of column values 
   */
-function pivotArrays(arrays = []) {
+function pivotArrays(arrays:Matrix = []):Matrix {
   return (arrays.length)
     ? arrays[ 0 ].map((vectorItem, index) => {
-      const returnArray = [];
+      const returnArray:Vector = [];
       arrays.forEach((v, i) => {
         returnArray.push(arrays[ i ][ index ]);
       });
@@ -235,6 +243,7 @@ function pivotArrays(arrays = []) {
     })
     : arrays;
 }
+////Vector, Matrix,
 
 /**
   * Standardize features by removing the mean and scaling to unit variance
@@ -246,14 +255,27 @@ function pivotArrays(arrays = []) {
   * @param {number[]} z - array of integers or floats
   * @returns {number[]}
   */
-const StandardScaler = (z) => scale(z, sd(z));
+const StandardScaler = (z: number[]): number[] => scale(z, sd(z));
 
+export type InputComponents = {
+  average?: number;
+  standard_dev?: number;
+  maximum?: number;
+  minimum?: number;
+};
+
+export type ScaledTransforms = {
+  components: InputComponents,
+  scale:(x:number)=>number,
+  descale:(x:number)=>number,
+  values:number[],
+}
 
 /** This function returns two functions that can standard scale new inputs and reverse scale new outputs
  * @param {Number[]} values - array of numbers
  * @returns {Object} - {scale[ Function ], descale[ Function ]}
 */
-function StandardScalerTransforms(vector = [], nan_value = -1, return_nan = false, inputComponents = {}) {
+function StandardScalerTransforms(vector = [], nan_value = -1, return_nan = false, inputComponents:InputComponents = {}): ScaledTransforms {
   const average = typeof inputComponents.average !=='undefined' 
     ? inputComponents.average
     : avg(vector);
@@ -266,13 +288,13 @@ function StandardScalerTransforms(vector = [], nan_value = -1, return_nan = fals
   const minimum = typeof inputComponents.minimum !=='undefined' 
     ? inputComponents.minimum
     : min(vector);
-  const scale = (z) => {
+  const scale = (z: number) => {
     const scaledValue = (z - average) / standard_dev;
     if (isNaN(scaledValue) && return_nan) return scaledValue;
     else if (isNaN(scaledValue) && return_nan === false) return (isNaN(standard_dev)) ? z : standard_dev;
     else return scaledValue;
   }; // equivalent to MinMaxScaler(z)
-  const descale = (scaledZ) => {
+  const descale = (scaledZ: number) => {
     const descaledValue = (scaledZ * standard_dev) + average;
     if (isNaN(descaledValue) && return_nan) return descaledValue;
     else if (isNaN(descaledValue) && return_nan === false) return (isNaN(standard_dev)) ? scaledZ : standard_dev;
@@ -303,13 +325,13 @@ function StandardScalerTransforms(vector = [], nan_value = -1, return_nan = fals
   * @param {number[]} z - array of integers or floats
   * @returns {number[]}
   */
-const MinMaxScaler= (z) => scale(z, (max(z) - min(z)));
+const MinMaxScaler= (z: number[]): number[] => scale(z, (max(z) - min(z)));
 
 /** This function returns two functions that can mix max scale new inputs and reverse scale new outputs
  * @param {Number[]} values - array of numbers
  * @returns {Object} - {scale[ Function ], descale[ Function ]}
 */
-function MinMaxScalerTransforms(vector = [], nan_value = -1, return_nan=false, inputComponents = {}) {
+function MinMaxScalerTransforms(vector = [], nan_value = -1, return_nan=false, inputComponents:InputComponents = {}):ScaledTransforms {
   const average = typeof inputComponents.average !=='undefined' 
     ? inputComponents.average
     : avg(vector);
@@ -324,13 +346,13 @@ function MinMaxScalerTransforms(vector = [], nan_value = -1, return_nan=false, i
   //@ts-ignore
     ? inputComponents.minimum
     : min(vector);
-  const scale = (z) => {
+  const scale = (z: number) => {
     const scaledValue = (z - average) / (maximum - minimum);
     if (isNaN(scaledValue) && return_nan) return scaledValue;
     else if (isNaN(scaledValue) && return_nan === false) return (isNaN(standard_dev)) ? z : standard_dev;
     else return scaledValue;
   }; // equivalent to MinMaxScaler(z)
-  const descale = (scaledZ) => {
+  const descale = (scaledZ: number) => {
     const descaledValue = (scaledZ * (maximum - minimum)) + average;
     if (isNaN(descaledValue) && return_nan) return descaledValue;
     else if (isNaN(descaledValue) && return_nan === false) return (isNaN(standard_dev)) ? scaledZ : standard_dev;
@@ -361,7 +383,7 @@ function MinMaxScalerTransforms(vector = [], nan_value = -1, return_nan=false, i
   * @param {number} z - Number of standard deviations from the mean.
   * @returns {number} p  - p-value
   */
-function approximateZPercentile(z, alpha=true) {
+function approximateZPercentile(z: number, alpha=true): number {
   // If z is greater than 6.5 standard deviations from the mean
   // the number of significant digits will be outside of a reasonable 
   // range.
@@ -395,7 +417,7 @@ function approximateZPercentile(z, alpha=true) {
  * @param {String} name 
  * @returns {String}
  */
-function getSafePropertyName(name) {
+function getSafePropertyName(name: string): string {
   return name.replace(/[^\w\s]/gi, '_');
 }
 
@@ -410,7 +432,7 @@ function getSafePropertyName(name) {
  * @param {Number[]} estimates - estimates values
  * @returns {Number[]} errors (residuals)
  */
-function forecastErrors(actuals, estimates) {
+function forecastErrors(actuals: number[], estimates: number[]): number[] {
   if (actuals.length !== estimates.length) throw new Error(`Actuals length (${actuals.length}) must equal Estimates length (${estimates.length})`);
   return actuals.map((act, i) => act - estimates[ i ]);
 }
@@ -427,7 +449,7 @@ function forecastErrors(actuals, estimates) {
  * @param {Number[]} estimates - estimates values
  * @returns {Number} MFE (bias)
  */
-function meanForecastError(actuals, estimates) { 
+function meanForecastError(actuals: number[], estimates: number[]): number { 
   const errors = forecastErrors(actuals, estimates);
   return avg(errors);
 }
@@ -444,7 +466,7 @@ function meanForecastError(actuals, estimates) {
  * @param {Number[]} estimates - estimates values
  * @returns {Number} MAD
  */
-function meanAbsoluteDeviation(actuals, estimates) { 
+function meanAbsoluteDeviation(actuals: number[], estimates: number[]): number { 
   const errors = forecastErrors(actuals, estimates).map(e=>Math.abs(e));
   return avg(errors);
 }
@@ -462,7 +484,7 @@ function meanAbsoluteDeviation(actuals, estimates) {
  * @param {Number[]} estimates - estimates values
  * @returns {Number} trackingSignal
  */
-function trackingSignal(actuals, estimates) {
+function trackingSignal(actuals: number[], estimates: number[]): number {
   const runningSumOfForecastErrors = sum(forecastErrors(actuals, estimates));
   const MAD = meanAbsoluteDeviation(actuals, estimates);
   return runningSumOfForecastErrors / MAD;
@@ -480,7 +502,7 @@ function trackingSignal(actuals, estimates) {
  * @param {Number[]} estimates - estimates values
  * @returns {Number} MSE
  */
-function meanSquaredError(actuals, estimates) {
+function meanSquaredError(actuals: number[], estimates: number[]): number {
   const squaredErrors = forecastErrors(actuals, estimates).map(e=>e*e);
   return avg(squaredErrors);
 }
@@ -498,7 +520,7 @@ function meanSquaredError(actuals, estimates) {
  * @param {Number[]} estimates - estimates values
  * @returns {Number} MMR
  */
-function MADMeanRatio(actuals, estimates) {
+function MADMeanRatio(actuals: number[], estimates: number[]): number {
   const MAD = meanAbsoluteDeviation(actuals, estimates);
   const mean = avg(actuals);
   return MAD / mean;
@@ -517,7 +539,7 @@ function MADMeanRatio(actuals, estimates) {
  * @param {Number[]} estimates - estimates values
  * @returns {Number} MAPE
  */
-function meanAbsolutePercentageError(actuals, estimates) {
+function meanAbsolutePercentageError(actuals: number[], estimates: number[]): number {
   const errors = forecastErrors(actuals, estimates).map(e=>Math.abs(e));
   const absErrorPercent = errors.map((e, i) => e / actuals[ i ]);
   return avg(absErrorPercent);
@@ -540,8 +562,8 @@ export const util = {
   StandardScalerTransforms,
   MinMaxScaler,
   MinMaxScalerTransforms,
-  LogScaler: (z) => z.map(Math.log),
-  ExpScaler: (z) => z.map(Math.exp),
+  LogScaler: (z: number[]) => z.map(Math.log),
+  ExpScaler: (z: number[]) => z.map(Math.exp),
   squaredDifference,
   standardError,
   coefficientOfDetermination,

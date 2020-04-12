@@ -13,14 +13,14 @@ const { FPGrowth, } = fpg;
  * @param {Boolean} [options.exludeEmptyTranscations=true] - exclude empty rows of transactions 
  * @returns {Object} {values - unique list of all values, valuesMap - map of values and labels, transactions - formatted sparse array}
  */
-export function getTransactions(data, options) {
+export function getTransactions(data: any[], options: any) {
   const config = Object.assign({}, {
     exludeEmptyTranscations: true,
   }, options);
   const values = new Set();
   const valuesMap = new Map();
   const transactions = data
-    .map(csvRow => {
+    .map((csvRow: { [s: string]: unknown; } | ArrayLike<unknown>) => {
       [
         ...Object.values(csvRow),
       ].forEach(csvVal => {
@@ -30,7 +30,7 @@ export function getTransactions(data, options) {
         if (!valuesMap.get(val)) {
           const index = (valuesMap.size < 0)
             ? 0
-            : parseInt(valuesMap.size / 2, 10);
+            : Math.round(valuesMap.size / 2);
           valuesMap.set(val, index.toString());
           valuesMap.set(index.toString(), val);
         }
@@ -44,7 +44,7 @@ export function getTransactions(data, options) {
     values,
     valuesMap,
     transactions: (config.exludeEmptyTranscations)
-      ? transactions.filter(csvRow => csvRow.length)
+      ? transactions.filter((csvRow: string | any[]) => csvRow.length)
       : transactions,
   };
 }
@@ -60,7 +60,7 @@ export function getTransactions(data, options) {
  * @param {Map} [options.valuesMap=new Map()] - map of values and labels (used for summary results)
  * @returns {Object} Returns the result from Node-FPGrowth or a summary of support and strong associations
  */
-export function assocationRuleLearning(transactions =[], options) {
+export function assocationRuleLearning(transactions =[], options: any) {
   return new Promise((resolve, reject) => {
     try {
       const config = Object.assign({}, {
@@ -71,19 +71,19 @@ export function assocationRuleLearning(transactions =[], options) {
       }, options);
       const fpgrowth = new FPGrowth(config.support);
       fpgrowth.exec(transactions)
-        .then(results => {
+        .then((results:any) => {
           const itemsets = (results.itemsets) ? results.itemsets : results;
           // console.log('itemsets', itemsets)
           if (config.summary) {
             resolve(itemsets
-              .map(itemset => ({
-                items_labels: itemset.items.map(item => config.valuesMap.get(item)),
+              .map((itemset: { items: any[]; support: number; }) => ({
+                items_labels: itemset.items.map((item: any) => config.valuesMap.get(item)),
                 items: itemset.items,
                 support: itemset.support,
                 support_percent: itemset.support / transactions.length,
               }))
-              .filter(itemset => itemset.items.length > 1)
-              .sort((a, b) => b.support - a.support));
+              .filter((itemset: { items: string | any[]; }) => itemset.items.length > 1)
+              .sort((a: { support: number; }, b: { support: number; }) => b.support - a.support));
           } else {
             resolve(results);
           }

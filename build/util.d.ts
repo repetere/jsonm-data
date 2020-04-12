@@ -1,3 +1,10 @@
+import { Matrix } from './DataSet';
+export interface ArrayCalculation {
+    (numbers: number[]): number;
+}
+export interface ArraySort {
+    (num: number[]): any;
+}
 /**
  * Returns an array of the squared different of two arrays
  * @memberOf util
@@ -5,7 +12,7 @@
  * @param {Number[]} right
  * @returns {Number[]} Squared difference of left minus right array
  */
-declare function squaredDifference(left: any, right: any): any;
+declare function squaredDifference(left: number[], right: number[]): number[];
 /**
  * The standard error of the estimate is a measure of the accuracy of predictions made with a regression line. Compares the estimate to the actual value
  * @memberOf util
@@ -19,7 +26,7 @@ declare function squaredDifference(left: any, right: any): any;
  * @param {Number[]} estimates - estimates values
  * @returns {Number} Standard Error of the Estimate
  */
-declare function standardError(actuals?: never[], estimates?: never[]): number;
+declare function standardError(actuals?: number[], estimates?: number[]): number;
 /**
  * Calculates the z score of each value in the sample, relative to the sample mean and standard deviation.
  * @memberOf util
@@ -27,7 +34,7 @@ declare function standardError(actuals?: never[], estimates?: never[]): number;
  * @param {Number[]} observations - An array like object containing the sample data.
  * @returns {Number[]} The z-scores, standardized by mean and standard deviation of input array
  */
-declare function standardScore(observations?: never[]): number[];
+declare function standardScore(observations?: number[]): number[];
 /**
  * In statistics, the coefficient of determination, denoted R2 or r2 and pronounced "R squared", is the proportion of the variance in the dependent variable that is predictable from the independent variable(s). Compares distance of estimated values to the mean.
  * {\bar {y}}={\frac {1}{n}}\sum _{i=1}^{n}y_{i}
@@ -42,7 +49,7 @@ r2.toFixed(1) // => 0.6
  * @param {Number[]} estimates - estimates values
  * @returns {Number} r^2
  */
-declare function coefficientOfDetermination(actuals?: never[], estimates?: never[]): number;
+declare function coefficientOfDetermination(actuals?: number[], estimates?: number[]): number;
 /**
  * You can use the adjusted coefficient of determination to determine how well a multiple regression equation “fits” the sample data. The adjusted coefficient of determination is closely related to the coefficient of determination (also known as R2) that you use to test the results of a simple regression equation.
  * @example
@@ -62,7 +69,13 @@ r2.toFixed(3) // => 0.922
  * @param {Number} options.independentVariables - the number of independent variables in the regression equation
  * @returns {Number} adjusted r^2 for multiple linear regression
  */
-declare function adjustedCoefficentOfDetermination(options?: {}): number;
+declare function adjustedCoefficentOfDetermination(options: {
+    actuals: number[];
+    estimates: number[];
+    rSquared: number;
+    independentVariables: number;
+    sampleSize: number;
+}): number;
 /**
  * The coefficent of Correlation is given by R decides how well the given data fits a line or a curve.
  * @example
@@ -76,7 +89,7 @@ R.toFixed(4) // => 0.9408
  * @param {Number[]} estimates - estimates values
  * @returns {Number} R
  */
-declare function coefficientOfCorrelation(actuals?: never[], estimates?: never[]): number;
+declare function coefficientOfCorrelation(actuals?: number[], estimates?: number[]): number;
 /**
  * The coefficent of determination is given by r^2 decides how well the given data fits a line or a curve.
  *
@@ -84,7 +97,7 @@ declare function coefficientOfCorrelation(actuals?: never[], estimates?: never[]
  * @param {Number[]}  [estimates=[]]
  * @returns {Number} r^2
  */
-declare function rSquared(actuals?: never[], estimates?: never[]): number;
+declare function rSquared(actuals?: number[], estimates?: number[]): number;
 /**
  * returns an array of vectors as an array of arrays
  * @example
@@ -94,7 +107,7 @@ const arrays = pivotVector(vectors); // => [ [1,2,3,3], [2,2,3,3], [3,3,4,3] ];
  * @param {Array[]} vectors
  * @returns {Array[]}
  */
-declare function pivotVector(vectors?: never[]): never[];
+declare function pivotVector(vectors?: Array<any>[]): Matrix;
 /**
  * returns a matrix of values by combining arrays into a matrix
  * @memberOf util
@@ -114,37 +127,29 @@ declare function pivotVector(vectors?: never[]): never[];
   * @param {Array} [vectors=[]] - array of arguments for columnArray to merge columns into a matrix
   * @returns {Array} a matrix of column values
   */
-declare function pivotArrays(arrays?: never[]): any;
+declare function pivotArrays(arrays?: Matrix): Matrix;
+export declare type InputComponents = {
+    average?: number;
+    standard_dev?: number;
+    maximum?: number;
+    minimum?: number;
+};
+export declare type ScaledTransforms = {
+    components: InputComponents;
+    scale: (x: number) => number;
+    descale: (x: number) => number;
+    values: number[];
+};
 /** This function returns two functions that can standard scale new inputs and reverse scale new outputs
  * @param {Number[]} values - array of numbers
  * @returns {Object} - {scale[ Function ], descale[ Function ]}
 */
-declare function StandardScalerTransforms(vector?: never[], nan_value?: number, return_nan?: boolean, inputComponents?: {}): {
-    components: {
-        average: any;
-        standard_dev: any;
-        maximum: any;
-        minimum: any;
-    };
-    scale: (z: any) => any;
-    descale: (scaledZ: any) => any;
-    values: any[];
-};
+declare function StandardScalerTransforms(vector?: never[], nan_value?: number, return_nan?: boolean, inputComponents?: InputComponents): ScaledTransforms;
 /** This function returns two functions that can mix max scale new inputs and reverse scale new outputs
  * @param {Number[]} values - array of numbers
  * @returns {Object} - {scale[ Function ], descale[ Function ]}
 */
-declare function MinMaxScalerTransforms(vector?: never[], nan_value?: number, return_nan?: boolean, inputComponents?: {}): {
-    components: {
-        average: any;
-        standard_dev: any;
-        maximum: any;
-        minimum: any;
-    };
-    scale: (z: any) => any;
-    descale: (scaledZ: any) => any;
-    values: any[];
-};
+declare function MinMaxScalerTransforms(vector?: never[], nan_value?: number, return_nan?: boolean, inputComponents?: InputComponents): ScaledTransforms;
 /**
   * Converts z-score into the probability
   * @memberOf util
@@ -152,13 +157,13 @@ declare function MinMaxScalerTransforms(vector?: never[], nan_value?: number, re
   * @param {number} z - Number of standard deviations from the mean.
   * @returns {number} p  - p-value
   */
-declare function approximateZPercentile(z: any, alpha?: boolean): number;
+declare function approximateZPercentile(z: number, alpha?: boolean): number;
 /**
  * returns a safe column name / url slug from a string
  * @param {String} name
  * @returns {String}
  */
-declare function getSafePropertyName(name: any): any;
+declare function getSafePropertyName(name: string): string;
 /**
  * The errors (residuals) from acutals and estimates
  * @memberOf util
@@ -170,7 +175,7 @@ declare function getSafePropertyName(name: any): any;
  * @param {Number[]} estimates - estimates values
  * @returns {Number[]} errors (residuals)
  */
-declare function forecastErrors(actuals: any, estimates: any): any;
+declare function forecastErrors(actuals: number[], estimates: number[]): number[];
 /**
  * The bias of forecast accuracy
  * @memberOf util
@@ -183,7 +188,7 @@ declare function forecastErrors(actuals: any, estimates: any): any;
  * @param {Number[]} estimates - estimates values
  * @returns {Number} MFE (bias)
  */
-declare function meanForecastError(actuals: any, estimates: any): any;
+declare function meanForecastError(actuals: number[], estimates: number[]): number;
 /**
  * Mean Absolute Deviation (MAD) indicates the absolute size of the errors
  * @memberOf util
@@ -196,7 +201,7 @@ declare function meanForecastError(actuals: any, estimates: any): any;
  * @param {Number[]} estimates - estimates values
  * @returns {Number} MAD
  */
-declare function meanAbsoluteDeviation(actuals: any, estimates: any): any;
+declare function meanAbsoluteDeviation(actuals: number[], estimates: number[]): number;
 /**
  * Tracking Signal - Used to pinpoint forecasting models that need adjustment
  * @memberOf util
@@ -210,7 +215,7 @@ declare function meanAbsoluteDeviation(actuals: any, estimates: any): any;
  * @param {Number[]} estimates - estimates values
  * @returns {Number} trackingSignal
  */
-declare function trackingSignal(actuals: any, estimates: any): number;
+declare function trackingSignal(actuals: number[], estimates: number[]): number;
 /**
  * The standard error of the estimate is a measure of the accuracy of predictions made with a regression line. Compares the estimate to the actual value
  * @memberOf util
@@ -223,7 +228,7 @@ declare function trackingSignal(actuals: any, estimates: any): number;
  * @param {Number[]} estimates - estimates values
  * @returns {Number} MSE
  */
-declare function meanSquaredError(actuals: any, estimates: any): any;
+declare function meanSquaredError(actuals: number[], estimates: number[]): number;
 /**
  * MAD over Mean Ratio - The MAD/Mean ratio is an alternative to the MAPE that is better suited to intermittent and low-volume data. As stated previously, percentage errors cannot be calculated when the actual equals zero and can take on extreme values when dealing with low-volume data. These issues become magnified when you start to average MAPEs over multiple time series. The MAD/Mean ratio tries to overcome this problem by dividing the MAD by the Mean—essentially rescaling the error to make it comparable across time series of varying scales
  * @memberOf util
@@ -237,7 +242,7 @@ declare function meanSquaredError(actuals: any, estimates: any): any;
  * @param {Number[]} estimates - estimates values
  * @returns {Number} MMR
  */
-declare function MADMeanRatio(actuals: any, estimates: any): number;
+declare function MADMeanRatio(actuals: number[], estimates: number[]): number;
 /**
  * MAPE (Mean Absolute Percent Error) measures the size of the error in percentage terms
  * @memberOf util
@@ -251,7 +256,7 @@ declare function MADMeanRatio(actuals: any, estimates: any): number;
  * @param {Number[]} estimates - estimates values
  * @returns {Number} MAPE
  */
-declare function meanAbsolutePercentageError(actuals: any, estimates: any): any;
+declare function meanAbsolutePercentageError(actuals: number[], estimates: number[]): number;
 /**
  * @namespace
  */
@@ -264,19 +269,19 @@ export declare const util: {
         (start: number, end?: number | undefined, step?: number | undefined): number[];
         (end: number, index: string | number, guard: object): number[];
     };
-    scale: (a: any, d: any) => any;
-    avg: any;
-    mean: any;
-    sum: any;
-    max: (a: any) => any;
-    min: (a: any) => any;
-    sd: any;
-    StandardScaler: (z: any) => any;
+    scale: (a: number[], d: number) => number[];
+    avg: ArrayCalculation;
+    mean: ArrayCalculation;
+    sum: ArrayCalculation;
+    max: ArraySort;
+    min: ArraySort;
+    sd: ArrayCalculation;
+    StandardScaler: (z: number[]) => number[];
     StandardScalerTransforms: typeof StandardScalerTransforms;
-    MinMaxScaler: (z: any) => any;
+    MinMaxScaler: (z: number[]) => number[];
     MinMaxScalerTransforms: typeof MinMaxScalerTransforms;
-    LogScaler: (z: any) => any;
-    ExpScaler: (z: any) => any;
+    LogScaler: (z: number[]) => number[];
+    ExpScaler: (z: number[]) => number[];
     squaredDifference: typeof squaredDifference;
     standardError: typeof standardError;
     coefficientOfDetermination: typeof coefficientOfDetermination;

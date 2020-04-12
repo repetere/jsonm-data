@@ -95,6 +95,7 @@ describe('nlp', function() {
     describe('evaluateString', () => {
       it('should return object of tokens and counts', () => {
         const estring = nlpVectors.evaluateString(eVString);
+        // console.log({ estring });
         expect(estring.great).to.eql(3);
         expect(estring.view).to.eql(1);
         expect(estring.food).to.eql(1);

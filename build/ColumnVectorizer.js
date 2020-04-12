@@ -82,7 +82,7 @@ export class ColumnVectorizer {
      */
     fit_transform(options = {}) {
         const data = options.data || this.data;
-        data.forEach(datum => {
+        data.forEach((datum) => {
             const datums = {};
             this.replacer(datum)
                 .split(' ')
@@ -158,7 +158,11 @@ export class ColumnVectorizer {
             }
             return result;
         }, {});
-        return Object.assign({}, this.wordMap, evalStringWordMap);
+        return {
+            ...this.wordMap,
+            ...evalStringWordMap,
+        };
+        // return Object.assign({}, this.wordMap, evalStringWordMap);
     }
     /**
      * returns new matrix of words with counts in columns

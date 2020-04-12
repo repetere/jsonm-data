@@ -19,7 +19,7 @@ export function getTransactions(data, options) {
     const values = new Set();
     const valuesMap = new Map();
     const transactions = data
-        .map(csvRow => {
+        .map((csvRow) => {
         [
             ...Object.values(csvRow),
         ].forEach(csvVal => {
@@ -29,7 +29,7 @@ export function getTransactions(data, options) {
             if (!valuesMap.get(val)) {
                 const index = (valuesMap.size < 0)
                     ? 0
-                    : parseInt(valuesMap.size / 2, 10);
+                    : Math.round(valuesMap.size / 2);
                 valuesMap.set(val, index.toString());
                 valuesMap.set(index.toString(), val);
             }
@@ -42,7 +42,7 @@ export function getTransactions(data, options) {
         values,
         valuesMap,
         transactions: (config.exludeEmptyTranscations)
-            ? transactions.filter(csvRow => csvRow.length)
+            ? transactions.filter((csvRow) => csvRow.length)
             : transactions,
     };
 }
@@ -68,18 +68,18 @@ export function assocationRuleLearning(transactions = [], options) {
             }, options);
             const fpgrowth = new FPGrowth(config.support);
             fpgrowth.exec(transactions)
-                .then(results => {
+                .then((results) => {
                 const itemsets = (results.itemsets) ? results.itemsets : results;
                 // console.log('itemsets', itemsets)
                 if (config.summary) {
                     resolve(itemsets
-                        .map(itemset => ({
-                        items_labels: itemset.items.map(item => config.valuesMap.get(item)),
+                        .map((itemset) => ({
+                        items_labels: itemset.items.map((item) => config.valuesMap.get(item)),
                         items: itemset.items,
                         support: itemset.support,
                         support_percent: itemset.support / transactions.length,
                     }))
-                        .filter(itemset => itemset.items.length > 1)
+                        .filter((itemset) => itemset.items.length > 1)
                         .sort((a, b) => b.support - a.support));
                 }
                 else {

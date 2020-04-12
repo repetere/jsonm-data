@@ -41,6 +41,24 @@ export declare type Data = Datum[];
  * @memberOf preprocessing
  */
 export declare class DataSet {
+    config: {
+        [index: string]: any;
+    };
+    data: Data;
+    labels: any;
+    encoders: any;
+    scalers: any;
+    selectColumns: (...args: any[]) => any;
+    columnArray: (...args: any[]) => any;
+    encodeObject: (...args: any[]) => any;
+    oneHotEncoder: (...args: any[]) => any;
+    oneHotDecoder: (...args: any[]) => any;
+    columnMatrix: (...args: any[]) => any;
+    reverseColumnMatrix: (...args: any[]) => any;
+    reverseColumnVector: (...args: any[]) => any;
+    getTransforms: (...args: any[]) => any;
+    static encoders: any;
+    static data: any;
     /**
      * Allows for fit transform short hand notation
      * @example
@@ -154,6 +172,7 @@ export declare class DataSet {
      * @returns {Array<Object>} returns an array of objects from an one hot encoded column
      */
     static oneHotDecoder(name: any, options: any): any;
+    static oneHotColumnArray(name: any, oneHotColumnArrayOptions: any): any;
     /**
      * returns a list of objects with only selected columns as properties
    * @example
@@ -168,7 +187,7 @@ export declare class DataSet {
      * @param {*} options
      * @returns {Object[]} an array of objects with properties derived from names
      */
-    static selectColumns(names: any, options?: {}): any;
+    static selectColumns(names: any[], options?: any): any;
     /**
      * returns a new array of a selected column from an array of objects, can filter, scale and replace values
      * @example
@@ -187,7 +206,7 @@ export declare class DataSet {
     * @param {boolean} [options.scale=false] - standard or minmax feature scale values
     * @returns {array}
     */
-    static columnArray(name: any, options?: {}): any;
+    static columnArray(name: string | number, options?: any): any;
     /**
      * returns a matrix of values by combining column arrays into a matrix
      * @example const csvObj = new DataSet([{col1:1,col2:5},{col1:2,col2:6}]);
@@ -200,7 +219,7 @@ export declare class DataSet {
     * @param {Array} [data=[]] - array of data to convert to matrix
     * @returns {Array} a matrix of column values
     */
-    static columnMatrix(vectors?: never[], data?: never[]): any;
+    static columnMatrix(vectors?: never[], data?: never[]): Matrix;
     /**
      * returns a JavaScript Object from a Map (supports nested Map Objects)
      * @example const csvObj = new DataSet([{col1:1,col2:5},{col1:2,col2:6}]);
@@ -222,7 +241,7 @@ export declare class DataSet {
     * @param {String|Number} [value=''] - value to convert to a 1 or a 0
     * @returns {Number} 0 or 1 depending on truthiness of value
     */
-    static getBinaryValue(value?: string): 1 | 0;
+    static getBinaryValue(value?: string | boolean): 0 | 1;
     /**
      * creates a new raw data instance for preprocessing data for machine learning
      * @example
@@ -230,7 +249,7 @@ export declare class DataSet {
      * @param {Object[]} dataset
      * @returns {this}
      */
-    constructor(data?: never[], options?: {});
+    constructor(data?: Data, options?: {});
     /**
      * returns Object of all encoders and scalers
      * @example const csvObj = new DataSet([{col1:1,col2:5},{col1:false,col2:6}]);
@@ -253,7 +272,7 @@ export declare class DataSet {
   Dataset.exportFeatures() //=> { labels: { col1: { "0": false, "1": true, "N": 0, "Yes": 1, "No": 0, "f": 0, "false": 1, } } }
     * @param {{labels:Map,encoders:Map,scalers:map}} [features={}] - JavaScript Object of transforms encoders and scalers(labels, encoders, scalers)
     */
-    importFeatures(features?: {}): void;
+    importFeatures(features?: any): void;
     /**
      * returns filtered rows of data
      * @example const csvObj = new DataSet([{col1:1,col2:5},{col1:2,col2:6}]);
@@ -264,7 +283,7 @@ export declare class DataSet {
     * @param {Function} [filter=()=>true] - filter function
     * @returns {Array} filtered array of data
     */
-    filterColumn(filter?: () => boolean): any;
+    filterColumn(filter?: () => boolean): Datum[];
     /**
      * Returns a new array of scaled values which can be reverse (descaled). The scaling transformations are stored on the DataSet
      * @example
@@ -278,7 +297,7 @@ export declare class DataSet {
      * @param {string} [options.strategy="log"] - strategy for scaling values
      * @returns {number[]} returns an array of scaled values
      */
-    columnScale(name: any, options?: {}): any;
+    columnScale(name: any, options?: {}): number[];
     /**
      * Returns a new array of descaled values
      * @example
@@ -309,14 +328,14 @@ export declare class DataSet {
     * @see {@link http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html}
     * @returns {array}
     */
-    labelEncoder(name: any, options: any): any;
+    labelEncoder(name: any, options: {}): any;
     /**
        * returns a new array and decodes an encoded column back to the original array values
        * @param {string} name - csv column header, or JSON object property name
        * @param options
        * @returns {array}
        */
-    labelDecode(name: any, options: any): any;
+    labelDecode(name: any, options?: any): any;
     /**
      * Return one hot encoded data
      * @example
@@ -372,7 +391,11 @@ export declare class DataSet {
     * @param {Function} options.reducer - reducer function to reduce into new array, it should push values into the resulting array
     * @returns {Object} a new object that has reduced array as the value
     */
-    columnReducer(name: any, options: any): {
+    columnReducer(name: any, options: {
+        columnName: any;
+        columnOptions: any;
+        reducer: any;
+    }): {
         [x: number]: any;
     };
     /**
@@ -407,7 +430,11 @@ export declare class DataSet {
      * @param options
      * @returns {Object} returns object with inverse transformed data
      */
-    inverseTransformObject(data: any, options: any): any;
+    inverseTransformObject(data: {
+        [x: string]: any;
+    }, options: {}): {
+        [x: string]: any;
+    };
     /**
      * transforms an object and replaces values that have been scaled or encoded
      * @example
@@ -430,7 +457,11 @@ export declare class DataSet {
      * @param options
      * @returns {Object}
      */
-    transformObject(data: any, options: any): any;
+    transformObject(data: {
+        [x: string]: any;
+    }, options: {}): {
+        [x: string]: any;
+    };
     /**
      * returns a new array of a selected column from an array of objects and replaces empty values, encodes values and scales values
      * @example
@@ -443,7 +474,7 @@ export declare class DataSet {
     * @param {boolean} [options.strategy="mean"] - strategy for replacing value, any array stat method from ml.js (mean, standardDeviation, median) or (label,labelEncoder,onehot,oneHotEncoder)
     * @returns {array|Object[]}
     */
-    columnReplace(name: any, options?: {}): any;
+    columnReplace(name: any, options?: any): any;
     /**
        * mutates data property of DataSet by replacing multiple columns in a single command
        * @example
@@ -466,7 +497,7 @@ export declare class DataSet {
     * @param {Object[]} options.columns - {name:'columnName',options:{strategy:'mean',labelOoptions:{}},}
     * @returns {Object[]}
     */
-    fitColumns(options?: {}, mockDataOptions?: {}): any;
+    fitColumns(options?: any, mockDataOptions?: {}): this | Data;
     /**
      * Mutate dataset data by inversing all transforms
      * @example
@@ -493,7 +524,7 @@ export declare class DataSet {
   // ]
      * @param options
      */
-    fitInverseTransforms(options?: {}): any;
+    fitInverseTransforms(options?: any): this | Data;
     /**
      * Mutate dataset data with all transforms
      * @param options
@@ -520,5 +551,5 @@ export declare class DataSet {
   // ...
   // ]
      */
-    fitTransforms(options?: {}): any;
+    fitTransforms(options?: any): this | Data;
 }
