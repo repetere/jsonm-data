@@ -8,6 +8,11 @@ export type ReinforcedOptions = {
 } 
 
 export interface ReinforcedLearning{
+  bounds:number;
+  getBound:BoundFunction;
+  last_selected:Vector;
+  total_reward: number;
+  iteration: number;
   learn: (...args:any[]) => any;
   train: (...args:any[]) => any;
   predict: (...args:any[]) => any;
@@ -85,7 +90,7 @@ export class UpperConfidenceBound extends ReinforcedLearningBase{
    */
   constructor(options: ReinforcedOptions = {}) {
     super(options);
-    this.bounds = super.bounds;
+    this.bounds = typeof options.bounds === 'number' ? options.bounds : super.bounds;
     this.numbers_of_selections = new Map();
     this.sums_of_rewards = new Map();
     for (let i = 0; i < this.bounds; i++){

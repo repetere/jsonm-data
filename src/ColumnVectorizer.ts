@@ -1,5 +1,6 @@
 // import { ml, } from './ml';
-import { default as natural, } from 'natural';
+// import { default as natural, } from 'natural';// removing because of webworker
+import { default as natural, } from './stub';// removing because of webworker
 import { nlp, } from './nlp';
 // import { util as utils, } from './util';
 import {Vector, Matrix, DataSet, } from './DataSet';
@@ -165,7 +166,7 @@ ColumnVectorizer.evaluateString('I would rate everything Great, views Great, foo
    */
   evaluateString(testString = ''): WordMap {
     const evalString = this.replacer(testString);
-    const evalStringWordMap = evalString.split(' ').reduce((result:WordMap, value) => { 
+    const evalStringWordMap = evalString.split(' ').reduce((result: WordMap, value) => { 
       if (this.tokens.has(value)) {
         result[ value ] = (result[ value ]!==undefined)
           ? result[ value ] + 1

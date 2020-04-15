@@ -113,12 +113,15 @@ describe('nlp', function() {
     describe('fit_transform', () => {
       it('should create a set of unique tokens this.tokens', () => {
         const tokens = csvData.reduce((result, value) => {
-          const val = value.Review.toLowerCase();
+          const val = value.Review
+            .toLowerCase()
+            .replace(/[^a-zA-Z]/gi, ' ');
           const stringVal = ModelXData.nlp.PorterStemmer.tokenizeAndStem(val).join(' ');
           result += stringVal+' ';
           return result;
         }, '');
         const tokenSet = new Set(tokens.split(' ').filter(val => val));
+        // console.log({ tokens, tokenSet,'nlpVectors.tokens':nlpVectors.tokens, });
         expect(nlpVectors.tokens.size).to.eql(tokenSet.size);
         tokenSet.forEach((val) => {
           expect(nlpVectors.tokens.has(val)).to.be.true;
@@ -126,7 +129,9 @@ describe('nlp', function() {
       });
       it('should create a dictionary of total word counts in this.wordCountMap', () => {
         const wordCountMap = csvData.reduce((result, value) => {
-          const val = value.Review.toLowerCase();
+          const val = value.Review
+            .toLowerCase()
+            .replace(/[^a-zA-Z]/gi, ' ');
           const stringVals = ModelXData.nlp.PorterStemmer.tokenizeAndStem(val);
           stringVals.forEach(token => {
             result[ token ] = (result[ token ])

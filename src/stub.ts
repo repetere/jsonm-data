@@ -1,8 +1,14 @@
 import stemmer from 'stemmer';
 const natural = {
   PorterStemmer: {
-    tokenizeAndStem: (input: string = '')=> {
-      return stemmer(input).split(' ');
+    tokenizeAndStem: (input: string = '') => {
+      const stems = input
+        .split(' ')
+        .map(word => word.trim())
+        .filter(word => word)
+        .map(stemmer);
+      // console.log({ stems });
+      return stems;
     }
   }
 };
