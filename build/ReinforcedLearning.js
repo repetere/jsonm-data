@@ -63,7 +63,7 @@ export class UpperConfidenceBound extends ReinforcedLearningBase {
      */
     constructor(options = {}) {
         super(options);
-        this.bounds = super.bounds;
+        this.bounds = typeof options.bounds === 'number' ? options.bounds : super.bounds;
         this.numbers_of_selections = new Map();
         this.sums_of_rewards = new Map();
         for (let i = 0; i < this.bounds; i++) {

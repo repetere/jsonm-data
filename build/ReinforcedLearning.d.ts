@@ -5,6 +5,11 @@ export declare type ReinforcedOptions = {
     getBound?: BoundFunction;
 };
 export interface ReinforcedLearning {
+    bounds: number;
+    getBound: BoundFunction;
+    last_selected: Vector;
+    total_reward: number;
+    iteration: number;
     learn: (...args: any[]) => any;
     train: (...args: any[]) => any;
     predict: (...args: any[]) => any;

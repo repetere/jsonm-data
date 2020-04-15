@@ -2,7 +2,13 @@ import stemmer from 'stemmer';
 const natural = {
     PorterStemmer: {
         tokenizeAndStem: (input = '') => {
-            return stemmer(input).split(' ');
+            const stems = input
+                .split(' ')
+                .map(word => word.trim())
+                .filter(word => word)
+                .map(stemmer);
+            // console.log({ stems });
+            return stems;
         }
     }
 };

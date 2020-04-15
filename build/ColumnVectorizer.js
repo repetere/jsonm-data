@@ -1,5 +1,6 @@
 // import { ml, } from './ml';
-import { default as natural, } from 'natural';
+// import { default as natural, } from 'natural';// removing because of webworker
+import { default as natural, } from './stub'; // removing because of webworker
 import { nlp, } from './nlp';
 // import { util as utils, } from './util';
 import { DataSet, } from './DataSet';
