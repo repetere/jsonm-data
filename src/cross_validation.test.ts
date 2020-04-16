@@ -1,7 +1,6 @@
 import * as ModelXData from './index';
-import chai from 'chai';
 import path from 'path';
-const expect = chai.expect;
+// const expect = chai.expect;
 const testArray = [20, 25, 10, 33, 50, 42, 19, 34, 90, 23, ];
 import { DecisionTreeClassifier as DTClassifier } from 'ml-cart';
 import {
@@ -64,27 +63,27 @@ describe('cross_validation', function () {
   describe('train_test_split', () => {
     const defaultTrainTestSplit = ModelXData.cross_validation.train_test_split(testArray);
     it('should split dataset with default values', () => {
-      expect(ModelXData.cross_validation).to.be.an('object');
-      expect(defaultTrainTestSplit.train.length).to.equal(8);
-      expect(defaultTrainTestSplit.test.length).to.equal(2);
+      expect(typeof ModelXData.cross_validation).toBe('object');
+      expect(defaultTrainTestSplit.train.length).toBe(8);
+      expect(defaultTrainTestSplit.test.length).toBe(2);
     });
     it('should split the data into two arrays', () => {
       const defaultTrainTestSplitArray = ModelXData.cross_validation.train_test_split(testArray, { return_array: true, });
       const [train, test,] = defaultTrainTestSplitArray;
-      expect(train.length).to.equal(8);
-      expect(test.length).to.equal(2);
+      expect(train.length).toBe(8);
+      expect(test.length).toBe(2);
     });
     it('should split with defined test size', () => {
       const defaultTrainTestSplitSize = ModelXData.cross_validation.train_test_split(testArray, { test_size: 0.4, });
       const { train, test, } = defaultTrainTestSplitSize;
-      expect(train.length).to.equal(6);
-      expect(test.length).to.equal(4);
+      expect(train.length).toBe(6);
+      expect(test.length).toBe(4);
     });
     it('should split with defined train size', () => {
       const defaultTrainTestSplitSize = ModelXData.cross_validation.train_test_split(testArray, { train_size: 0.5, });
       const { train, test, } = defaultTrainTestSplitSize;
-      expect(train.length).to.equal(5);
-      expect(test.length).to.equal(5);
+      expect(train.length).toBe(5);
+      expect(test.length).toBe(5);
     });
     it('should use a randomized seed', () => {
       const defaultTrainTestSplitSeed0 = ModelXData.cross_validation.train_test_split(testArray, { random_state: 0, return_array: true, });
@@ -93,29 +92,29 @@ describe('cross_validation', function () {
       const [train0,] = defaultTrainTestSplitSeed0;
       const [train0a,] = defaultTrainTestSplitSeed0a;
       const [train1,] = defaultTrainTestSplitSeed1;
-      expect(train0.toString()).to.equal(train0a.toString());
-      expect(train0.toString()).to.not.equal(train1.toString());
+      expect(train0.toString()).toBe(train0a.toString());
+      expect(train0.toString()).not.toBe(train1.toString());
     });
   });
   describe('cross_validation_split', () => {
     const defaultCrossValidation = ModelXData.cross_validation.cross_validation_split(testArray);
     it('should split dataset with default values', () => {
-      expect(defaultCrossValidation.length).to.equal(3);
+      expect(defaultCrossValidation.length).toBe(3);
     });
     it('should split the data into k-folds', () => {
       const defaultCrossValidationArray = ModelXData.cross_validation.cross_validation_split(testArray, {
         folds: 2,
       });
-      expect(defaultCrossValidationArray[0].length).to.equal(5);
-      expect(defaultCrossValidationArray.length).to.equal(2);
+      expect(defaultCrossValidationArray[0].length).toBe(5);
+      expect(defaultCrossValidationArray.length).toBe(2);
     });
     it('should use a randomized seed', () => {
       const defaultCrossValidationSeed0 = ModelXData.cross_validation.cross_validation_split(testArray, { random_state: 0, });
       const defaultCrossValidationSeed0a = ModelXData.cross_validation.cross_validation_split(testArray, { random_state: 0, });
       const defaultCrossValidationSeed1 = ModelXData.cross_validation.cross_validation_split(testArray, { random_state: 1, });
       
-      expect(JSON.stringify(defaultCrossValidationSeed0)).to.equal(JSON.stringify(defaultCrossValidationSeed0a));
-      expect(JSON.stringify(defaultCrossValidationSeed0)).to.not.equal(JSON.stringify(defaultCrossValidationSeed1));
+      expect(JSON.stringify(defaultCrossValidationSeed0)).toBe(JSON.stringify(defaultCrossValidationSeed0a));
+      expect(JSON.stringify(defaultCrossValidationSeed0)).not.toBe(JSON.stringify(defaultCrossValidationSeed1));
     });
   });
   describe('cross_validate_score', () => {
@@ -137,9 +136,9 @@ describe('cross_validation', function () {
         dependentFeatures,
         independentFeatures,
       });
-      expect(accuracy).to.have.lengthOf(10);
-      expect(ModelXData.util.mean(accuracy)).to.be.greaterThan(0.75);
-      expect(ModelXData.util.sd(accuracy)).to.be.lessThan(0.08);
+      expect(accuracy).toHaveLength(10);
+      expect(ModelXData.util.mean(accuracy)).toBeGreaterThan(0.75);
+      expect(ModelXData.util.sd(accuracy)).toBeLessThan(0.08);
       // console.log('accuracy', accuracy);
       // console.log('acc avg', ModelXData.util.mean(accuracy));
       // console.log('acc sd', ModelXData.util.sd(accuracy));   
@@ -199,8 +198,8 @@ describe('cross_validation', function () {
       });
       // console.log('accuracy', accuracy);
       // console.log('acc avg', ModelXData.util.mean(accuracy));
-      expect(accuracy).to.have.lengthOf(2);
-      expect(ModelXData.util.mean(accuracy)).to.be.lessThan(40000);
+      expect(accuracy).toHaveLength(2);
+      expect(ModelXData.util.mean(accuracy)).toBeLessThan(40000);
       // expect(ModelXData.util.sd(accuracy)).to.be.lessThan(0.08);
       // console.log('acc sd', ModelXData.util.sd(accuracy));   
     });
@@ -223,8 +222,8 @@ describe('cross_validation', function () {
       });
       // console.log('accuracy', accuracy);
       // console.log('acc avg', ModelXData.util.mean(accuracy));
-      expect(accuracy).to.have.lengthOf(2);
-      expect(ModelXData.util.mean(accuracy)).to.be.lessThan(9000);
+      expect(accuracy).toHaveLength(2);
+      expect(ModelXData.util.mean(accuracy)).toBeLessThan(9000);
       // expect(ModelXData.util.sd(accuracy)).to.be.lessThan(0.08);
       // console.log('acc sd', ModelXData.util.sd(accuracy));   
     });
@@ -253,8 +252,8 @@ describe('cross_validation', function () {
         independentFeatures: regressionIndependentFeatures,
       });
       // console.log(JSON.stringify(optimizedParameters, null, 2));
-      expect(optimizedParameters).to.haveOwnProperty('params');
-      expect(optimizedParameters).to.haveOwnProperty('results');
+      expect(optimizedParameters).toHaveProperty('params');
+      expect(optimizedParameters).toHaveProperty('results');
       done();
     });
     it('should return sorted best classification parameters', () => {
@@ -282,8 +281,8 @@ describe('cross_validation', function () {
         independentFeatures,
       });
       // console.log(JSON.stringify(optimizedParameters, null, 2));
-      expect(optimizedParameters).to.be.an('array');
-      expect(optimizedParameters).to.have.lengthOf(8);
+      expect(optimizedParameters).toBeInstanceOf(Array);
+      expect(optimizedParameters).toHaveLength(8);
     });
     it('should sort parameter performance logically for regression', () => {
       //TODO

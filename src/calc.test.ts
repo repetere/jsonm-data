@@ -1,6 +1,4 @@
 import * as ModelXData from './index';
-import chai from 'chai';
-const expect = chai.expect;
 const rawTransactions = [
   ['Cookies', 'Milk', 'Plates', ],
   ['Cups', 'Milk', 'Silverware', ],
@@ -17,27 +15,27 @@ describe('calc', function () {
     const gt = ModelXData.calc.getTransactions(rawTransactions);
     // console.log(gt);
     it('should return values', () => {
-      expect(gt).to.haveOwnProperty('values');
-      expect(gt.values).to.be.a('set');
+      expect(gt).toHaveProperty('values');
+      expect(gt.values).toBeInstanceOf(Set);
     });
     it('should contain all unique values of all transactions', () => {
-      expect(Array.from(gt.values.values())).to.include.all.members([
+      expect(Array.from(gt.values.values())).toEqual(expect.arrayContaining([
         'Cookies', 'Milk', 'Plates', 'Cups', 'Silverware',
-      ]);
+      ]));
     });
     it('should have a map of all unique values and indexes', () => {
-      expect(gt.valuesMap).to.be.a('map');
+      expect(gt.valuesMap).toBeInstanceOf(Map);
       gt.values.forEach((val, i) => {
-        expect(gt.valuesMap.has(val.toString())).to.be.true;
-        expect(gt.valuesMap.get(val.toString())).to.eql(gt.valuesMap.get(i.toString()));
-        expect(gt.valuesMap.has(i.toString())).to.be.true;
-        expect(gt.valuesMap.get(i.toString())).to.eql(gt.valuesMap.get(val.toString()));
+        expect(gt.valuesMap.has(val.toString())).toBe(true);
+        expect(gt.valuesMap.get(val.toString())).toEqual(gt.valuesMap.get(i.toString()));
+        expect(gt.valuesMap.has(i.toString())).toBe(true);
+        expect(gt.valuesMap.get(i.toString())).toEqual(gt.valuesMap.get(val.toString()));
       });
     });
     it('should map values onto transactions', () => {
-      expect(gt.transactions.length).to.eql(rawTransactions.length);
+      expect(gt.transactions.length).toEqual(rawTransactions.length);
       rawTransactions.forEach((rt, i) => {
-        expect(rt.length).to.eql(gt.transactions[ i ].length);
+        expect(rt.length).toEqual(gt.transactions[ i ].length);
       });
     });
   });
@@ -50,11 +48,11 @@ describe('calc', function () {
       })
         .then(arl => {
           // console.log('arl',arl);
-          expect(arl).to.be.an('array');
+          expect(arl).toBeInstanceOf(Array);
           done();
         })
         .catch(done);
-      expect(ModelXData.calc.assocationRuleLearning).to.be.an('function');
+      expect(typeof ModelXData.calc.assocationRuleLearning).toBe('function');
       // }
     });
     it('should use accept options for eclat summary', (done) => {
@@ -65,7 +63,7 @@ describe('calc', function () {
       })
         .then(arl => {
           // console.log({ arl });
-          expect(arl).to.be.an('array');
+          expect(arl).toBeInstanceOf(Array);
           done();
         })
         .catch(done);
@@ -77,7 +75,7 @@ describe('calc', function () {
         summary: false,
       })
         .then(arl => {
-          expect(arl).to.be.an('array');
+          expect(arl).toBeInstanceOf(Array);
           done();
         })
         .catch(done);
@@ -95,7 +93,7 @@ describe('calc', function () {
           done(new Error('should not get to then'))
         })
         .catch(e => {
-          expect(e).to.be.a('error');
+          expect(e).toBeInstanceOf(Error);
           done();
         });
     });
