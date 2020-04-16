@@ -1,8 +1,6 @@
 import { DataSet, } from './DataSet';
 import { util, } from './util';
-import chai from 'chai';
 import { fullData, fullDataDouble, } from '../test/mock/dataset';
-const expect = chai.expect;
 const csvData = [{
   'Country': 'Brazil',
   'Age': '44',
@@ -81,8 +79,8 @@ describe('preprocessing', function() {
     describe('constructor', () => {
       it('should instantiate a new DataSet Class', () => {
         // expect(ms.preprocessing).to.be.an('object');
-        expect(DataSet).to.be.a('function');
-        expect(CSVDataSet).to.be.instanceof(DataSet);
+        expect(typeof DataSet).toBe('function');
+        expect(CSVDataSet).toBeInstanceOf(DataSet);
       });
     });
     describe('static getBinaryValue', () => {
@@ -90,10 +88,10 @@ describe('preprocessing', function() {
         const truthy = [' ', true, 1, 100, 'true', 'T', ];
         const falsey = [undefined, null, '', 0, 'N', 'n', 'NO', 'No', 'no', 'False', 'F', 'f', ];
         truthy.forEach(truthVal => {
-          expect(DataSet.getBinaryValue(truthVal)).to.eql(1);
+          expect(DataSet.getBinaryValue(truthVal)).toEqual(1);
         });
         falsey.forEach(falseVal => {
-          expect(DataSet.getBinaryValue(falseVal)).to.eql(0);
+          expect(DataSet.getBinaryValue(falseVal)).toEqual(0);
         });
       });
     });
@@ -114,8 +112,9 @@ describe('preprocessing', function() {
         const convertedMaptoObject = DataSet.mapToObject(testMap);
         const correctObject = { foo: 'bar', hello: ['some', 'values', 'in', 'array', ], };
         // console.log({ convertedMaptoObject, correctObject, });
-        expect(JSON.stringify(convertedMaptoObject)).to.eql(JSON.stringify(correctObject));
-        expect(convertedMaptoObject.hello).to.be.an('array').and.to.include.members(testArray);
+        expect(JSON.stringify(convertedMaptoObject)).toEqual(JSON.stringify(correctObject));
+        expect(convertedMaptoObject.hello).toBeInstanceOf(Array)
+        expect(convertedMaptoObject.hello).toMatchObject(testArray);
       });
       it('should convert nested map objects', () => {
         const correctFullyNested = {
@@ -127,11 +126,11 @@ describe('preprocessing', function() {
           },
         };
         const convertedMaptoObject = mapToObject(nestedMap);
-        expect(JSON.stringify(convertedMaptoObject)).to.eql(JSON.stringify(correctFullyNested));
+        expect(JSON.stringify(convertedMaptoObject)).toEqual(JSON.stringify(correctFullyNested));
       });
       it('should handle empty maps', () => {
         const emptyConverted = mapToObject(new Map());
-        expect(emptyConverted).to.deep.eql({});
+        expect(emptyConverted).toEqual({});
       });
     });
     describe('exportFeatures', () => {
@@ -176,7 +175,7 @@ describe('preprocessing', function() {
           },
         };
         const features = EncodedCSVDataSet.exportFeatures();
-        expect(Object.keys(features).length).to.eql(Object.keys(expectedFeatures).length);
+        expect(Object.keys(features).length).toEqual(Object.keys(expectedFeatures).length);
       });
     });
     describe('importFeatures', () => { 
@@ -196,23 +195,23 @@ describe('preprocessing', function() {
         const newFeatureDataSet = new DataSet();
         newFeatureDataSet.importFeatures(features);
         const transformedObject = newFeatureDataSet.transformObject(fullDataDouble[ 0 ]);
-        expect(transformedObject).to.deep.eql(FeatureDataSet.data[ 0 ]);
+        expect(transformedObject).toEqual(FeatureDataSet.data[ 0 ]);
       });
     });
     describe('filterColumn', () => {
       it('should by default return full dataset', () => {
-        expect(CSVDataSet.filterColumn()).to.eql(CSVDataSet.data);
+        expect(CSVDataSet.filterColumn()).toEqual(CSVDataSet.data);
       });
       it('should filter data by a filter function', () => {
-        expect(CSVDataSet.filterColumn(row => row.Salary.toString() === '83000')).to.have.lengthOf(1);
+        expect(CSVDataSet.filterColumn(row => row.Salary.toString() === '83000')).toHaveLength(1);
       });
     });
     describe('columnMatrix', () => { 
       it('should create a matrix of values from columns', () => {
         const AgeSalMatrix = CSVDataSet.columnMatrix([['Age', ], ['Salary', ], ]);
         const AgeArray = CSVDataSet.columnArray('Age');
-        expect(AgeSalMatrix).to.be.lengthOf(AgeArray.length);
-        expect(AgeSalMatrix[ 0 ][0]).to.eql(AgeArray[0]);
+        expect(AgeSalMatrix).toHaveLength(AgeArray.length);
+        expect(AgeSalMatrix[ 0 ][0]).toEqual(AgeArray[0]);
       });
       it('should create a matrix of values from an array of column names', () => {
         const columns = [
@@ -220,15 +219,15 @@ describe('preprocessing', function() {
         ];
         const AgeSalMatrix = CSVDataSet.columnMatrix(columns);
         const AgeArray = CSVDataSet.columnArray('Age');
-        expect(AgeSalMatrix).to.be.lengthOf(AgeArray.length);
-        expect(AgeSalMatrix[ 0 ][0]).to.eql(AgeArray[0]);
+        expect(AgeSalMatrix).toHaveLength(AgeArray.length);
+        expect(AgeSalMatrix[ 0 ][0]).toEqual(AgeArray[0]);
       });
       it('should handle invalid columns', () => {
         const invalidMatrix = CSVDataSet.columnMatrix([
           ['iojf',],
         ]);
-        expect(invalidMatrix).to.be.an('Array');
-        expect(invalidMatrix[ 0 ][ 0 ]).to.be.undefined;
+        expect(invalidMatrix).toBeInstanceOf(Array);
+        expect(invalidMatrix[ 0 ][ 0 ]).toBeUndefined();
       });
     });
     describe('static reverseColumnMatrix', () => {
@@ -240,10 +239,10 @@ describe('preprocessing', function() {
         const AgeArray = CSVDataSet.columnArray('Age');
         const reversedAgeSalMatrix = DataSet.reverseColumnMatrix({ vectors: AgeSalMatrix, labels: dependentVariables, });
         const selectedCols = CSVDataSet.selectColumns(['Age', 'Salary', ]);
-        expect(AgeSalMatrix).to.be.lengthOf(AgeArray.length);
-        expect(AgeSalMatrix).to.eql(AgeSalMatrix2);
-        expect(reversedAgeSalMatrix).to.be.lengthOf(AgeArray.length);
-        expect(reversedAgeSalMatrix).to.eql(selectedCols);
+        expect(AgeSalMatrix).toHaveLength(AgeArray.length);
+        expect(AgeSalMatrix).toEqual(AgeSalMatrix2);
+        expect(reversedAgeSalMatrix).toHaveLength(AgeArray.length);
+        expect(reversedAgeSalMatrix).toEqual(selectedCols);
       });
     });
     describe('static reverseColumnVector', () => {
@@ -254,38 +253,38 @@ describe('preprocessing', function() {
         const reversedAgeSalVector = DataSet.reverseColumnVector({ vector: AgeArray, labels: dependentVariables, });
         const reversedAgeSalVector2 = DataSet.reverseColumnVector({ vector: AgeArray, labels: dependentVariables2, });
         const selectedCols = CSVDataSet.selectColumns(['Age', ]);
-        expect(reversedAgeSalVector).to.be.lengthOf(AgeArray.length);
-        expect(reversedAgeSalVector).to.eql(selectedCols);
-        expect(reversedAgeSalVector).to.eql(reversedAgeSalVector2);
+        expect(reversedAgeSalVector).toHaveLength(AgeArray.length);
+        expect(reversedAgeSalVector).toEqual(selectedCols);
+        expect(reversedAgeSalVector).toEqual(reversedAgeSalVector2);
       });
     });
     describe('selectColumns', () => { 
       it('should return a list of objects with only selected columns as properties', () => {
         const cols = ['Age', 'Salary', ];
         const selectedCols = CSVDataSet.selectColumns(cols);
-        expect(Object.keys(selectedCols[ 0 ])).to.eql(cols);
-        expect(Object.keys(selectedCols[ 0 ])).to.have.lengthOf(cols.length);
-        expect(selectedCols[ 0 ].Age).to.eql(CSVDataSet.data[ 0 ].Age);
-        expect(selectedCols[ 0 ].Salary).to.eql(CSVDataSet.data[ 0 ].Salary);
+        expect(Object.keys(selectedCols[ 0 ])).toEqual(cols);
+        expect(Object.keys(selectedCols[ 0 ])).toHaveLength(cols.length);
+        expect(selectedCols[ 0 ].Age).toEqual(CSVDataSet.data[ 0 ].Age);
+        expect(selectedCols[ 0 ].Salary).toEqual(CSVDataSet.data[ 0 ].Salary);
       });
     });
     describe('columnArray', () => {
       const countryColumn = CSVDataSet.columnArray('Country');
       it('should select a column from CSV Data by name', () => {
-        expect(countryColumn.length).to.equal(10);
-        expect(countryColumn[0]).to.equal(csvData[0].Country);
+        expect(countryColumn.length).toBe(10);
+        expect(countryColumn[0]).toBe(csvData[0].Country);
       });
       it('should prefilter the dataset', () => {
         const countryColumnPreFiltered = CSVDataSet.columnArray('Country', {
           prefilter: row => row.Country === 'Ghana',
         });
-        expect(countryColumnPreFiltered.length).to.equal(3);
+        expect(countryColumnPreFiltered.length).toBe(3);
       });
       it('should filter the dataset', () => {
         const countryColumnPostFiltered = CSVDataSet.columnArray('Country', {
           filter: val => val === 'Brazil',
         });
-        expect(countryColumnPostFiltered.length).to.equal(4);
+        expect(countryColumnPostFiltered.length).toBe(4);
       });
       it('should replace values in dataset', () => {
         const countryColumnReplaced = CSVDataSet.columnArray('Country', {
@@ -300,8 +299,8 @@ describe('preprocessing', function() {
             value: (result, val, index, arr, name) => parseInt(val[name]) * 10,
           },
         });
-        expect(ageColumnReplacedFuncVal[0]).to.equal(440);
-        expect(countryColumnReplaced[0]).to.equal('China');
+        expect(ageColumnReplacedFuncVal[0]).toBe(440);
+        expect(countryColumnReplaced[0]).toBe('China');
       });
       it('should convert vals to numbers', () => {
         const ageColumnInt = CSVDataSet.columnArray('Age', {
@@ -310,8 +309,8 @@ describe('preprocessing', function() {
         const ageColumnFloat = CSVDataSet.columnArray('Age', {
           parseFloat: true,
         });
-        expect(ageColumnInt[0]).to.be.a('number');
-        expect(ageColumnFloat[0]).to.be.a('number');
+        expect(typeof ageColumnInt[0]).toBe('number');
+        expect(typeof ageColumnFloat[0]).toBe('number');
       });
       it('should standardize scale values', () => {
         const salaryColumn = CSVDataSet.columnArray('Salary', {
@@ -322,9 +321,9 @@ describe('preprocessing', function() {
           prefilter: row => row.Salary,
           scale: 'standard',
         });
-        expect(JSON.stringify(standardScaleSalary)).to.equal(JSON.stringify(util.StandardScaler(salaryColumn)));
-        expect(util.sd(standardScaleSalary)).to.equal(1);
-        expect(parseInt(Math.round(util.mean(standardScaleSalary)))).to.equal(0);
+        expect(JSON.stringify(standardScaleSalary)).toBe(JSON.stringify(util.StandardScaler(salaryColumn)));
+        expect(util.sd(standardScaleSalary)).toBe(1);
+        expect(parseInt(Math.round(util.mean(standardScaleSalary)))).toBe(0);
       });
       it('should z-score / MinMax scale values', () => {
         const salaryColumn = CSVDataSet.columnArray('Salary', {
@@ -335,10 +334,10 @@ describe('preprocessing', function() {
           prefilter: row => row.Salary,
           scale: 'minMax',
         });
-        console.log('util.mean(minMaxScaleSalary)', util.mean(minMaxScaleSalary));
-        expect(JSON.stringify(minMaxScaleSalary)).to.equal(JSON.stringify(util.MinMaxScaler(salaryColumn)));
-        expect(parseInt(Math.round(util.sd(minMaxScaleSalary)))).to.closeTo(0,1);
-        expect(parseInt(Math.round(util.mean(minMaxScaleSalary)))).to.closeTo(0,1);
+        // console.log('util.mean(minMaxScaleSalary)', util.mean(minMaxScaleSalary));
+        expect(JSON.stringify(minMaxScaleSalary)).toBe(JSON.stringify(util.MinMaxScaler(salaryColumn)));
+        expect(parseInt(Math.round(util.sd(minMaxScaleSalary)))).toBeCloseTo(0,1);
+        expect(parseInt(Math.round(util.mean(minMaxScaleSalary)))).toBeCloseTo(0,1);
       });
       it('should log scale values', () => {
         const salaryColumn = CSVDataSet.columnArray('Salary', {
@@ -349,7 +348,7 @@ describe('preprocessing', function() {
           prefilter: row => row.Salary,
           scale: 'log',
         });
-        expect(JSON.stringify(logScaleSalary)).to.equal(JSON.stringify(util.LogScaler(salaryColumn)));
+        expect(JSON.stringify(logScaleSalary)).toBe(JSON.stringify(util.LogScaler(salaryColumn)));
       });
       it('should exp scale values', () => {
         const salaryColumn = CSVDataSet.columnArray('Salary', {
@@ -360,7 +359,7 @@ describe('preprocessing', function() {
           prefilter: row => row.Salary,
           scale: 'exp',
         });
-        expect(JSON.stringify(logScaleSalary)).to.equal(JSON.stringify(util.ExpScaler(salaryColumn)));
+        expect(JSON.stringify(logScaleSalary)).toBe(JSON.stringify(util.ExpScaler(salaryColumn)));
       });
     });
     describe('columnScale / columnDescale', () => {
@@ -368,16 +367,16 @@ describe('preprocessing', function() {
       const salaryColumnScaled = CSVFullDataSet.columnArray('Salary', { scale:'log', });
       const scaledSalaryColumn = CSVFullDataSet.columnScale('Salary', { strategy: 'log', });
       it('should scale a column and store the transform functions', () => {
-        expect(CSVFullDataSet.scalers).to.be.a('map');
-        expect(CSVFullDataSet.scalers.has('Salary')).to.be.true;
-        expect(scaledSalaryColumn).to.eql(salaryColumnScaled);
-        expect(CSVFullDataSet.scalers.get('Salary').scale(72000)).to.eql(11.184421397998193);
-        expect(CSVFullDataSet.scalers.get('Salary').scale(44)).to.eql( 3.784189633918261);
+        expect(CSVFullDataSet.scalers).toBeInstanceOf(Map);
+        expect(CSVFullDataSet.scalers.has('Salary')).toBe(true);
+        expect(scaledSalaryColumn).toEqual(salaryColumnScaled);
+        expect(CSVFullDataSet.scalers.get('Salary').scale(72000)).toEqual(11.184421397998193);
+        expect(CSVFullDataSet.scalers.get('Salary').scale(44)).toEqual(3.784189633918261);
       });
       it('should descale a column', () => {
         const descaledColumn = CSVFullDataSet.columnDescale('Salary', { data: scaledSalaryColumn, });
-        expect(parseInt(CSVFullDataSet.scalers.get('Salary').descale(11.184421397998193))).to.eql(72000);
-        expect(descaledColumn.map(Math.round)).to.eql(salaryColumn);
+        expect(parseInt(CSVFullDataSet.scalers.get('Salary').descale(11.184421397998193))).toEqual(72000);
+        expect(descaledColumn.map(Math.round)).toEqual(salaryColumn);
       });
     });
     describe('labelEncoder', () => {
@@ -390,22 +389,22 @@ describe('preprocessing', function() {
           binary: true,
         });
         encodedPurchased = binaryEncodedColumn;
-        expect(binaryEncodedColumn).to.include.members([0, 1,]);
+        expect(binaryEncodedColumn).toEqual(expect.arrayContaining([0, 1,]));
       });
       it('should label encode', () => {
         const labelEncodedColumn = CSVDataSet.labelEncoder('Country');
         encodedCountry = labelEncodedColumn;
         // console.log({ CSVDataSet }, CSVDataSet.data);
-        expect(labelEncodedColumn).to.include.members([0, 1, 2,]);
-        labelEncodedColumn.forEach(lec => expect(lec).to.be.a('number'));
-        expect(CSVDataSet.labels.size).equal(2);
+        expect(labelEncodedColumn).toEqual(expect.arrayContaining([0, 1, 2,]));
+        labelEncodedColumn.forEach(lec => expect(typeof lec).toBe('number'));
+        expect(CSVDataSet.labels.size).toBe(2);
       });
       it('should decode labels', () => {
         const decodedCountry = CSVDataSet.labelDecode('Country', { data: encodedCountry, });
         // console.log({ decodedCountry, encodedCountry });
-        expect(decodedCountry[0]).to.be.a('string');
-        expect(decodedCountry[0]).to.eql('Brazil');
-        expect(CSVDataSet.labels.get('Country').get(decodedCountry[0])).to.equal(encodedCountry[0]);
+        expect(typeof decodedCountry[0]).toBe('string');
+        expect(decodedCountry[0]).toEqual('Brazil');
+        expect(CSVDataSet.labels.get('Country').get(decodedCountry[0])).toBe(encodedCountry[0]);
       });
     });
     describe('getTransforms', () => {
@@ -428,10 +427,10 @@ describe('preprocessing', function() {
           { name: 'Rating', options: { strategy: 'label', }, 
           },
         ];
-        expect(e).to.eql(fitConf1);
-        expect(e1).to.eql(fitConf1);
-        expect(e2).to.eql([]);
-        expect(e3).to.eql([
+        expect(e).toEqual(fitConf1);
+        expect(e1).toEqual(fitConf1);
+        expect(e2).toEqual([]);
+        expect(e3).toEqual([
           {
             name: 'Age',
             options: {
@@ -457,10 +456,10 @@ describe('preprocessing', function() {
           fruit: 'apple',
         };
         const encodedObject = EncodedCSVDataSet.encodeObject(data, options);
-        expect(encodedObject).to.eql({ fruit_apple: 1, fruit_orange: 0, fruit_banana: 0, });
-        expect(EncodedCSVDataSet.encodeObject({ fruit:'orange',  }, options)).to.eql({ fruit_apple: 0, fruit_orange: 1, fruit_banana: 0, });
-        expect(EncodedCSVDataSet.encodeObject({ fruit:'banana', }, options)).to.eql({ fruit_apple: 0, fruit_orange: 0, fruit_banana: 1, });
-        expect(EncodedCSVDataSet.encodeObject({ fruit: 'kiwi', veggie:true, }, options)).to.eql({ fruit_apple: 0, fruit_orange: 0, fruit_banana: 0, });
+        expect(encodedObject).toEqual({ fruit_apple: 1, fruit_orange: 0, fruit_banana: 0, });
+        expect(EncodedCSVDataSet.encodeObject({ fruit:'orange',  }, options)).toEqual({ fruit_apple: 0, fruit_orange: 1, fruit_banana: 0, });
+        expect(EncodedCSVDataSet.encodeObject({ fruit:'banana', }, options)).toEqual({ fruit_apple: 0, fruit_orange: 0, fruit_banana: 1, });
+        expect(EncodedCSVDataSet.encodeObject({ fruit: 'kiwi', veggie:true, }, options)).toEqual({ fruit_apple: 0, fruit_orange: 0, fruit_banana: 0, });
       });
     });
     describe('transformObject / inverseTransformObject', () => {
@@ -477,8 +476,8 @@ describe('preprocessing', function() {
           'Salary': 72000,
           'Purchased': 'N',
         }, { removeValues: true, });
-        expect(transformedObject).to.eql(EncodedCSVDataSet.data[ 0 ]);
-        expect(transformedObject2).to.not.haveOwnProperty('Country');
+        expect(transformedObject).toEqual(EncodedCSVDataSet.data[ 0 ]);
+        expect(transformedObject2).not.toHaveProperty('Country');
         // console.log({ transformedObject2, });
       });
       it('should inverse transform objects', () => {
@@ -493,39 +492,39 @@ describe('preprocessing', function() {
         const inverseTransformedObject = EncodedCSVDataSet.inverseTransformObject(tranformedObj);
         const inverseTransformedObject2 = EncodedCSVDataSet.inverseTransformObject(tranformedObj, { removeValues: true, });
 
-        expect(inverseTransformedObject.Age.toString()).to.eql(csvData[0].Age);
-        expect(inverseTransformedObject2.Age.toString()).to.eql(csvData[0].Age);
-        expect(inverseTransformedObject.Salary).to.eql(csvData[0].Salary);
-        expect(inverseTransformedObject2.Salary).to.eql(csvData[0].Salary);
-        expect(inverseTransformedObject2.Purchased).to.eql(Boolean(DataSet.getBinaryValue(csvData[0].Purchased)));
-        expect(inverseTransformedObject2.Country).to.eql(csvData[0].Country);
+        expect(inverseTransformedObject.Age.toString()).toEqual(csvData[0].Age);
+        expect(inverseTransformedObject2.Age.toString()).toEqual(csvData[0].Age);
+        expect(inverseTransformedObject.Salary).toEqual(csvData[0].Salary);
+        expect(inverseTransformedObject2.Salary).toEqual(csvData[0].Salary);
+        expect(inverseTransformedObject2.Purchased).toEqual(Boolean(DataSet.getBinaryValue(csvData[0].Purchased)));
+        expect(inverseTransformedObject2.Country).toEqual(csvData[0].Country);
       });
     });
     describe('oneHotDecoder', () => {
       it('should one hot decode', () => {
         const oneHotDecodeCountry = EncodedCSVDataSet.oneHotDecoder('Country');
         const countryColumn = EncodedCSVDataSet.selectColumns(['Country',]);
-        expect(oneHotDecodeCountry).to.eql(countryColumn);
+        expect(oneHotDecodeCountry).toEqual(countryColumn);
       });
     });
     describe('oneHotColumnArray', () => {
       it('should return all encoded columns', () => {
         const selectedColumns = EncodedCSVDataSet.selectColumns(['Country_Brazil', 'Country_Mexico', 'Country_Ghana',]);
         const oneHotArrayed = EncodedCSVDataSet.oneHotColumnArray('Country');
-        expect(oneHotArrayed).to.eql(selectedColumns);
+        expect(oneHotArrayed).toEqual(selectedColumns);
       });
     });
     describe('oneHotEncoder', () => {
       it('should one hot encode', () => {
         const oneHotCountry = CSVDataSet.oneHotEncoder('Country');
-        expect(Object.keys(oneHotCountry).length).to.equal(3);
-        expect(oneHotCountry).to.haveOwnProperty('Country_Brazil');
-        expect(csvData[0].Country).to.equal('Brazil');
-        expect(oneHotCountry.Country_Brazil[0]).to.eql(1);
-        expect(oneHotCountry.Country_Mexico[0]).to.eql(0);
-        expect(oneHotCountry.Country_Ghana[0]).to.eql(0);
-        expect(CSVDataSet.encoders.size).to.equal(1);
-        expect(CSVDataSet.encoders.has('Country')).to.be.true;
+        expect(Object.keys(oneHotCountry).length).toBe(3);
+        expect(oneHotCountry).toHaveProperty('Country_Brazil');
+        expect(csvData[0].Country).toBe('Brazil');
+        expect(oneHotCountry.Country_Brazil[0]).toEqual(1);
+        expect(oneHotCountry.Country_Mexico[0]).toEqual(0);
+        expect(oneHotCountry.Country_Ghana[0]).toEqual(0);
+        expect(CSVDataSet.encoders.size).toBe(1);
+        expect(CSVDataSet.encoders.has('Country')).toBe(true);
       });
     });
     describe('columnReducer', () => { 
@@ -540,8 +539,8 @@ describe('preprocessing', function() {
         });
         const AgeColumn = CSVDataSet.columnArray('Age');
         // console.log({ DoubleAgeColumn, AgeColumn, });
-        expect(AgeColumn[ 0 ] * 2).to.eql(DoubleAgeColumn.DoubleAge[ 0 ]);
-        expect(DoubleAgeColumn.DoubleAge).to.eql(AgeColumn.reduce(reducer, []));
+        expect(AgeColumn[ 0 ] * 2).toEqual(DoubleAgeColumn.DoubleAge[ 0 ]);
+        expect(DoubleAgeColumn.DoubleAge).toEqual(AgeColumn.reduce(reducer, []));
       });
     });
     describe('columnReplace', () => {
@@ -553,8 +552,8 @@ describe('preprocessing', function() {
         const cr2Country = CSVDataSet.columnReplace('Country', {
           strategy: 'labelEncoder',
         });
-        expect(leCountry).to.have.ordered.members(crCountry);
-        expect(leCountry).to.have.ordered.members(cr2Country);
+        expect(leCountry).toEqual(crCountry);
+        expect(leCountry).toEqual(cr2Country);
       });
       it('should onehot encode', () => {
         const ohCountry = CSVDataSet.oneHotEncoder('Country');
@@ -570,10 +569,10 @@ describe('preprocessing', function() {
         const oh4Country = CSVDataSet.columnReplace('Country', {
           strategy: 'oneHotEncoder',
         });
-        expect(ohCountry).to.deep.eq(oh1Country);
-        expect(ohCountry).to.deep.eq(oh2Country);
-        expect(ohCountry).to.deep.eq(oh3Country);
-        expect(ohCountry).to.deep.eq(oh4Country);
+        expect(ohCountry).toEqual(oh1Country);
+        expect(ohCountry).toEqual(oh2Country);
+        expect(ohCountry).toEqual(oh3Country);
+        expect(ohCountry).toEqual(oh4Country);
       });
       it('should replace empty values with mean by default', () => {
         const colSalary = CSVDataSet.columnArray('Salary', {
@@ -582,7 +581,7 @@ describe('preprocessing', function() {
         });
         const meanColSalary = CSVDataSet.columnReplace('Salary');
         const meanSal = util.mean(colSalary);
-        expect(meanColSalary).to.include(meanSal);
+        expect(meanColSalary).toEqual(expect.arrayContaining([meanSal]));
       });
       it('should replace empty values with stat function from ml.js', () => {
         const colSalary = CSVDataSet.columnArray('Salary', {
@@ -591,7 +590,7 @@ describe('preprocessing', function() {
         });
         const standardDeviationColSalary = CSVDataSet.columnReplace('Salary', { strategy: 'standardDeviation', });
         const sdSal = util.sd(colSalary);
-        expect(standardDeviationColSalary).to.include(sdSal);
+        expect(standardDeviationColSalary).toEqual(expect.arrayContaining([sdSal]));
       });
       it('should replace values by standard scaling', () => {
         const salaryColumn = CSVDataSet.columnArray('Salary', {
@@ -610,7 +609,7 @@ describe('preprocessing', function() {
         const standardScaleSalary = CSVDataSet.columnReplace('Salary', {
           scale: 'standard',
         });
-        expect(standardScaleSalary).to.include.ordered.members(scaledSalaryColumn);
+        expect(standardScaleSalary).toEqual(scaledSalaryColumn);
       });
     });
     describe('fitColumns', () => {
@@ -665,19 +664,21 @@ describe('preprocessing', function() {
             },
           ],
         });
-        expect(fittedOriginalData.columnArray('Extra')).to.eql(extraColumn);
+        expect(fittedOriginalData.columnArray('Extra')).toEqual(extraColumn);
       });
       it('should only merge columns if data length matches', () => { 
         const fittedOriginalData = new DataSet([...unmodifiedCSVData, ]);
         const newColumn = fittedOriginalData.columnMerge('err', [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, ]);
-        expect(newColumn).to.be.an('Object');
-        expect(newColumn).to.haveOwnProperty('err');
-        expect(newColumn.err).to.be.an('array');
+        expect(typeof newColumn).toBe('object');
+        expect(newColumn).toHaveProperty('err');
+        expect(newColumn.err).toBeInstanceOf(Array);
         try {
           fittedOriginalData.columnMerge('err', [1, 2, ]);
         } catch (e) {
-          expect(e).to.be.an('error');
-          expect(e.toString()).to.eql(`RangeError: Merged data column must have the same length(2) as the DataSet's length (${10})`);
+          expect(e).toBeInstanceOf(Error);
+          expect(e.toString()).toEqual(
+            `RangeError: Merged data column must have the same length(2) as the DataSet's length (${10})`
+          );
         }
       });
       it('should fit multiple columns', () => {
@@ -727,7 +728,7 @@ describe('preprocessing', function() {
             },
           ],
         });
-        expect(fitdata).to.eql(fittedOriginalData.data);
+        expect(fitdata).toEqual(fittedOriginalData.data);
         const fitObject = fittedOriginalData.fitColumns({
           returnData: false,
           columns: [
@@ -743,11 +744,11 @@ describe('preprocessing', function() {
             },
           ],
         });
-        expect(fitObject).to.eql(fittedOriginalData);
-        expect(unmodifiedData === fittedOriginalData).to.be.false;
-        expect(fittedOriginalData.data).to.not.eq(unmodifiedCSVData);
-        expect(fittedOriginalData.columnArray('Age')).to.have.ordered.members(unmodifiedData.columnReplace('Age'));
-        expect(fittedOriginalData.columnArray('Salary')).to.have.ordered.members(unmodifiedData.columnReplace('Salary', {
+        expect(fitObject).toEqual(fittedOriginalData);
+        expect(unmodifiedData === fittedOriginalData).toBe(false);
+        expect(fittedOriginalData.data).not.toBe(unmodifiedCSVData);
+        expect(fittedOriginalData.columnArray('Age')).toEqual(unmodifiedData.columnReplace('Age'));
+        expect(fittedOriginalData.columnArray('Salary')).toEqual(unmodifiedData.columnReplace('Salary', {
           scale: 'standard',
         }));
       });
@@ -779,11 +780,11 @@ describe('preprocessing', function() {
           Age:['scale', 'standard',],
           Purchased:['label',],
         });
-        expect(refitDataSet.data[ 0 ]).to.eql(transformedFullObject);
+        expect(refitDataSet.data[ 0 ]).toEqual(transformedFullObject);
         refitDataSet.fitInverseTransforms({ removeValues: true, });
-        expect(refitDataSet.data[ 0 ]).to.eql(originalObject);
+        expect(refitDataSet.data[ 0 ]).toEqual(originalObject);
         refitDataSet.fitTransforms({ removeValues: true, });
-        expect(refitDataSet.data[ 0 ]).to.eql(transformedObject);
+        expect(refitDataSet.data[ 0 ]).toEqual(transformedObject);
         // console.log('BEFORE refitDataSet.data', refitDataSet.data);
         // console.log('AFTER refitDataSet.data', refitDataSet.data);
         // console.log('AFTER REFITREFIT refitDataSet.data', refitDataSet.data);

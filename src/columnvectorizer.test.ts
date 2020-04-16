@@ -1,6 +1,4 @@
 import * as ModelXData from './index';
-import chai from 'chai';
-const expect = chai.expect;
 const csvData = [
   {
     'Review': 'This is really good',
@@ -56,58 +54,58 @@ describe('nlp', function() {
     // console.log({ nlpVectors });
     describe('constructor', () => {
       it('should instantiate a new ColumnVectorizer Class', () => {
-        expect(ModelXData.nlp).to.be.an('object');
-        expect(ModelXData.nlp.ColumnVectorizer).to.be.a('function');
-        expect(nlpVectors).to.be.instanceof(ModelXData.nlp.ColumnVectorizer);
-        expect(nlpVectors.maxFeatures).to.eql(9);
+        expect(typeof ModelXData.nlp).toBe('object');
+        expect(typeof ModelXData.nlp.ColumnVectorizer).toBe('function');
+        expect(nlpVectors).toBeInstanceOf(ModelXData.nlp.ColumnVectorizer);
+        expect(nlpVectors.maxFeatures).toEqual(9);
         // console.log({ nlpVectors });
       });
     });
     describe('get_tokens', () => {
       it('should return an array of all tokens', () => {
         const toks = nlpVectors.get_tokens();
-        expect(toks).to.be.an('array');
-        expect(toks).to.have.lengthOf(nlpVectors.tokens.size);
+        expect(toks).toBeInstanceOf(Array);
+        expect(toks).toHaveLength(nlpVectors.tokens.size);
       });
     });
     describe('get_vector_array', () => {
       it('should return an array of tokens as vectors', () => {
         const toks = nlpVectors.get_vector_array();
-        expect(toks).to.be.an('array');
-        expect(toks[0]).to.be.an('array');
-        expect(toks).to.have.lengthOf(nlpVectors.tokens.size);
+        expect(toks).toBeInstanceOf(Array);
+        expect(toks[0]).toBeInstanceOf(Array);
+        expect(toks).toHaveLength(nlpVectors.tokens.size);
       });
     });
     describe('get_limited_features', () => {
       it('should return a count of maxFeatures in array of tokens as vectors', () => {
         const feats = nlpVectors.get_limited_features();
-        expect(feats).to.be.an('array');
-        expect(feats[0]).to.be.an('array');
-        expect(feats).to.have.lengthOf(nlpVectors.maxFeatures);
+        expect(feats).toBeInstanceOf(Array);
+        expect(feats[0]).toBeInstanceOf(Array);
+        expect(feats).toHaveLength(nlpVectors.maxFeatures);
       });
       it('should limit features in array of tokens as vectors', () => {
         const feats = nlpVectors.get_limited_features({ maxFeatures: 5, });
-        expect(feats).to.be.an('array');
-        expect(feats[0]).to.be.an('array');
-        expect(feats).to.have.lengthOf(5);
+        expect(feats).toBeInstanceOf(Array);
+        expect(feats[0]).toBeInstanceOf(Array);
+        expect(feats).toHaveLength(5);
       });
     });
     describe('evaluateString', () => {
       it('should return object of tokens and counts', () => {
         const estring = nlpVectors.evaluateString(eVString);
         // console.log({ estring });
-        expect(estring.great).to.eql(3);
-        expect(estring.view).to.eql(1);
-        expect(estring.food).to.eql(1);
+        expect(estring.great).toEqual(3);
+        expect(estring.view).toEqual(1);
+        expect(estring.food).toEqual(1);
       });
     });
     describe('evaluate', () => {
       it('should return matrix vector for new predictions', () => {
         const estring = nlpVectors.evaluate(eVString);
         // console.log({estring})
-        expect(estring).to.be.an('array');
-        expect(estring[ 0 ]).to.have.lengthOf(9);
-        expect(estring[ 0 ].filter(val => val === 3).length).to.eql(1);
+        expect(estring).toBeInstanceOf(Array);
+        expect(estring[ 0 ]).toHaveLength(9);
+        expect(estring[ 0 ].filter(val => val === 3).length).toEqual(1);
       });
     });
     describe('fit_transform', () => {
@@ -122,9 +120,9 @@ describe('nlp', function() {
         }, '');
         const tokenSet = new Set(tokens.split(' ').filter(val => val));
         // console.log({ tokens, tokenSet,'nlpVectors.tokens':nlpVectors.tokens, });
-        expect(nlpVectors.tokens.size).to.eql(tokenSet.size);
+        expect(nlpVectors.tokens.size).toEqual(tokenSet.size);
         tokenSet.forEach((val) => {
-          expect(nlpVectors.tokens.has(val)).to.be.true;
+          expect(nlpVectors.tokens.has(val)).toBe(true);
         });
       });
       it('should create a dictionary of total word counts in this.wordCountMap', () => {
@@ -141,12 +139,12 @@ describe('nlp', function() {
           return result;
         }, {});
         Object.keys(wordCountMap).forEach(word => {
-          expect(wordCountMap[ word ]).to.eql(nlpVectors.wordCountMap[ word ]);
+          expect(wordCountMap[ word ]).toEqual(nlpVectors.wordCountMap[ word ]);
         });
       });
       it('should create a dictionary of all words this.wordMap', () => {
         Array.from(nlpVectors.tokens).forEach(token => {
-          expect(nlpVectors.wordMap[ token ]).to.eql(0);
+          expect(nlpVectors.wordMap[ token ]).toEqual(0);
         });
       });
       it('should create an array of all sorted words in this.sortedWordCount by word count', () => {
@@ -154,19 +152,19 @@ describe('nlp', function() {
           if (i < nlpVectors.sortedWordCount.length-1) {
             const currentSWC = nlpVectors.sortedWordCount[ i ];
             const nextSWC = nlpVectors.sortedWordCount[ i + 1 ];
-            expect(nlpVectors.wordCountMap[ currentSWC ]).to.be.gte(nlpVectors.wordCountMap[ nextSWC ]);
+            expect(nlpVectors.wordCountMap[ currentSWC ]).toBeGreaterThanOrEqual(nlpVectors.wordCountMap[ nextSWC ]);
           }
         });
       });
       it('should create a sparse matrix dictionary words from corpus in this.data as this.vectors', () => {
         const firstSentence = csvData[ 0 ].Review;
         const firstSentenceWordMap = nlpVectors.evaluateString(firstSentence);
-        expect(firstSentenceWordMap).to.eql(nlpVectors.vectors[ 0 ]);
+        expect(firstSentenceWordMap).toEqual(nlpVectors.vectors[ 0 ]);
       });
       it('should create a sparse matrix of words from corpus in this.data', () => {
         const firstSentence = csvData[ 0 ].Review;
         const firstSentenceWordMap = nlpVectors.evaluate(firstSentence);
-        expect(firstSentenceWordMap[0]).to.eql(nlpVectors.matrix[ 0 ]);
+        expect(firstSentenceWordMap[0]).toEqual(nlpVectors.matrix[ 0 ]);
       });
     });
   });
