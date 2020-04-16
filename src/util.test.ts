@@ -78,6 +78,7 @@ describe('util', function () {
   describe('max', () => {
     it('should return max value', () => {
       expect(ModelXData.util).to.be.an('object');
+      console.log({ testArray });
       expect(ModelXData.util.max(testArray)).to.equal(50);   
     });
   });

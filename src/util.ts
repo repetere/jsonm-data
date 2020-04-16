@@ -13,7 +13,7 @@ const avg:ArrayCalculation = ArrayStat.mean;
 const mean = avg;
 const sum:ArrayCalculation = ArrayStat.sum;
 const scale = (a:number[], d:number) => a.map(x => (x - avg(a)) / d);
-const max:ArraySort = (a:number[]) => a.concat([]).sort((x:number, y:number):any => x < y)[0];
+const max: ArraySort = ArrayStat.max;// (a: number[]) => ArrayStat.max(a);//a.concat([]).sort((x:number, y:number):any => x < y)[0];
 const min:ArraySort = a => a.concat([]).sort((x, y):any => x > y)[0];
 const sd:ArrayCalculation = ArrayStat.standardDeviation; //(a, av) => Math.sqrt(avg(a.map(x => (x - av) * x)));
 
