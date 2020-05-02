@@ -81,7 +81,7 @@
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.2",
     "install": "0.13.0",
-    "jest": "25.2.7",
+    "jest": "25.5.4",
     "ml-cart": "2.0.1",
     "ml-knn": "3.0.0",
     "ml-random-forest": "2.0.1",
