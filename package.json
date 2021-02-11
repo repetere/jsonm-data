@@ -95,7 +95,7 @@
     "ts-jest": "25.3.1",
     "tslib": "1.11.1",
     "typedoc": "0.17.4",
-    "typescript": "3.8.3",
+    "typescript": "3.9.9",
     "underscore": "1.10.2"
   },
   "jest": {
