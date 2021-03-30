@@ -19,16 +19,15 @@ export async function loadCSVURI(filepath, options) {
         const config = Object.assign({ checkType: true, }, options);
         const req = reqMethod(filepath, res => {
             csv(config).fromStream(res)
-                // .on('data', jsonObj => {
-                //   csvData.push(JSON.parse(jsonObj.toString()));
-                // })
-                .on('json', (jsonObj) => {
-                csvData.push(jsonObj);
-            })
-                .on('error', (err) => {
+                .subscribe((json) => {
+                csvData.push(json);
+            }, 
+            //onError
+            (err) => {
                 return reject(err);
-            })
-                .on('done', (error) => {
+            }, 
+            //onComplete
+            (error) => {
                 if (error) {
                     return reject(error);
                 }
@@ -36,6 +35,14 @@ export async function loadCSVURI(filepath, options) {
                     return resolve(csvData);
                 }
             });
+            // .on('data', jsonObj => {
+            //   csvData.push(JSON.parse(jsonObj.toString()));
+            // })
+            // .on('json', (jsonObj:CSVJSONRow) => {
+            //   csvData.push(jsonObj);
+            // })
+            // .on('error', )
+            // .on('done', );
         });
         req.on('error', reject);
     });
@@ -58,16 +65,15 @@ export async function loadCSV(filepath, options) {
             const csvData = [];
             const config = Object.assign({ checkType: true, }, options);
             csv(config).fromFile(filepath)
-                // .on('data', jsonObj => {
-                //   csvData.push(JSON.parse(jsonObj.toString()));
-                // })
-                .on('json', (jsonObj) => {
-                csvData.push(jsonObj);
-            })
-                .on('error', (err) => {
+                .subscribe((json, lineNumber) => {
+                csvData.push(json);
+            }, 
+            //onError
+            (err) => {
                 return reject(err);
-            })
-                .on('done', (error) => {
+            }, 
+            //onComplete
+            (error) => {
                 if (error) {
                     return reject(error);
                 }
