@@ -104,10 +104,6 @@ function getPlugins({
     plugins.push(
       ...[
         replace({
-          // 'csvtojson': 'http',
-          // 'natural': 'http',
-          // 'natural': './stub',
-          // 'import { default as natural, } from \'natural\';': 'const natural = {};',
         }),
         // nodePolyfills(),
         alias({
@@ -116,12 +112,6 @@ function getPlugins({
             'natural': './stub',
             'async_hooks': path.join(__dirname,'./async_hook_stub.ts'),
           }
-          // csvtojson:'util'
-      // csvtojson:'node_modules/csvtojson/browser/csvtojson.min.js'
-      // entries: {
-      //   find: /csv$/,
-      //   replacement: 'http'
-      // }
         })
       ]);
   } 
