@@ -32,7 +32,7 @@
   ],
   "typedocOptions":{
     "out":"./docs",
-    "include":"./manual",
+    "includes":"./manual",
     "media": "./manual/media",
     "hideGenerator":true
   }
