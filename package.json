@@ -102,7 +102,7 @@
     "stemmer": "1.0.5",
     "ts-jest": "25.3.1",
     "tslib": "1.11.1",
-    "typedoc": "0.17.4",
+    "typedoc": "0.20.34",
     "typescript": "3.8.3",
     "underscore": "1.10.2"
   },
