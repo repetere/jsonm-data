@@ -1,6 +1,6 @@
 {
   "name": "@modelx/data",
-  "version": "1.0.7",
+  "version": "1.0.0",
   "description": "modelscript is a javascript module with simple and efficient tools for data mining and data analysis in JavaScript. When modelscript used with ML.js, pandas-js, and numjs, you're left with the equivalent R/Python tool set in JavaScript.",
   "main": "dist/index.cjs.js",
   "cjs": "dist/index.cjs.js",
