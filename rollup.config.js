@@ -5,10 +5,11 @@ import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
 import replace from '@rollup/plugin-replace';
 import terser from 'rollup-plugin-terser-js';
-import sucrase from '@rollup/plugin-sucrase';
+// import sucrase from '@rollup/plugin-sucrase';
 import alias from '@rollup/plugin-alias';
 import pkg from "./package.json";
-import nodePolyfills from 'rollup-plugin-node-polyfills';
+// import nodePolyfills from 'rollup-plugin-node-polyfills';
+import path from 'path'
 
 const name = 'ModelXData';
 const external = [
@@ -113,6 +114,7 @@ function getPlugins({
           // resolve: ['.js', '.ts'],
           entries: {
             'natural': './stub',
+            'async_hooks': path.join(__dirname,'./async_hook_stub.ts'),
           }
           // csvtojson:'util'
       // csvtojson:'node_modules/csvtojson/browser/csvtojson.min.js'
@@ -125,41 +127,31 @@ function getPlugins({
   } 
   
   plugins.push(...[
-    sucrase({
-      exclude: ['node_modules/**'],
-      transforms: ['typescript']
-    }),
-    // external(),
     replace({
+      preventAssignment: true,
       'process.env.NODE_ENV': minify ?
         JSON.stringify('production') : JSON.stringify('development'),
       // 'global.': '(typeof global!=="undefined" ? global : window).'
     }),
-
-    // typescript({
-    //   noEmitOnError: false,
-    //   declaration: false,
-    //   declarationDir: null,
-    // }),
-    
+    builtins({}),
     resolve({
-      extensions: ['.js', '.ts'],
+      // extensions: ['.js', '.ts'],
       preferBuiltins: true,
     }),
-    builtins({}),
+    typescript({
+      noEmitOnError: false,
+      declaration: false,
+      declarationDir: null,
+      allowJs:true,
+      // target: legacy?"es6":"esnext",
+    }),
     commonjs({
-      // extensions: [ '.js', '.ts','.jsx' ,'.tsx' ]
-      // namedExports: {
-      //     // 'node_modules/react-is/index.js': ['isValidElementType'],
-      //     // 'node_modules/react/index.js': [
-      //     //     'Children',
-      //     // ],
-      // }
+      extensions: ['.js'],
     }), // so Rollup can convert `ms` to an ES module
     globals({
       // react: 'React',
-      'webworker-threads':'webworkerThreads',
-      'wordnet-db':'wordnetDb'
+      // 'webworker-threads':'webworkerThreads',
+      // 'wordnet-db':'wordnetDb'
     }),
   ]);
   if (minify) {
