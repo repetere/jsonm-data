@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/repetere/modelx-data/compare/v1.0.0...v1.1.0) (2021-03-30)
+
+
+### Features
+
+* upgraded csvtojson ([7536004](https://github.com/repetere/modelx-data/commit/753600468f885ce66985aa2e1f2f82cbc6cd5527))
+
 # 1.0.0 (2021-03-30)
 
 
