@@ -75,7 +75,7 @@
     "@semantic-release/release-notes-generator": "9.0.2",
     "@types/enzyme": "3.10.5",
     "@types/enzyme-adapter-react-16": "1.0.6",
-    "@types/jest": "25.2.1",
+    "@types/jest": "26.0.22",
     "@types/lodash.range": "3.2.6",
     "@types/lodash.rangeright": "4.2.6",
     "@types/natural": "0.6.3",
