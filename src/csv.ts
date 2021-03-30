@@ -27,22 +27,30 @@ export async function loadCSVURI(filepath:string, options?:CSVOptions):Promise<C
     const config = Object.assign({ checkType: true, }, options);
     const req = reqMethod(filepath, res => {
       csv(config).fromStream(res)
-        // .on('data', jsonObj => {
-        //   csvData.push(JSON.parse(jsonObj.toString()));
-        // })
-        .on('json', (jsonObj:CSVJSONRow) => {
-          csvData.push(jsonObj);
-        })
-        .on('error', (err:Error) => {
+        .subscribe((json:CSVJSONRow)=>{
+          csvData.push(json);
+        },
+        //onError
+        (err:Error) => {
           return reject(err);
-        })
-        .on('done', (error?:Error) => {
+        },
+        //onComplete
+        (error?:Error) => {
           if (error) {
             return reject(error);
           } else {
             return resolve(csvData);
           }
-        });
+        }
+        )
+        // .on('data', jsonObj => {
+        //   csvData.push(JSON.parse(jsonObj.toString()));
+        // })
+        // .on('json', (jsonObj:CSVJSONRow) => {
+        //   csvData.push(jsonObj);
+        // })
+        // .on('error', )
+        // .on('done', );
     });
     req.on('error', reject);
   });
@@ -66,22 +74,22 @@ export async function loadCSV(filepath:string, options?:CSVOptions):Promise<CSVJ
       const csvData:CSVJSON = [];
       const config = Object.assign({ checkType: true, }, options);
       csv(config).fromFile(filepath)
-        // .on('data', jsonObj => {
-        //   csvData.push(JSON.parse(jsonObj.toString()));
-        // })
-        .on('json', (jsonObj:CSVJSONRow) => {
-          csvData.push(jsonObj);
-        })
-        .on('error', (err:Error) => {
+      .subscribe((json:CSVJSONRow,lineNumber:number)=>{
+        csvData.push(json);
+      },
+        //onError
+        (err:Error) => {
           return reject(err);
-        })
-        .on('done', (error?:Error) => {
+        },
+        //onComplete
+        (error?:Error) => {
           if (error) {
             return reject(error);
           } else {
             return resolve(csvData);
           }
-        });
+        }
+      )
     });
   }
 }
