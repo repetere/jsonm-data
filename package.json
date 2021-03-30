@@ -80,7 +80,7 @@
     "@types/lodash.rangeright": "4.2.6",
     "@types/natural": "0.6.3",
     "@types/probability-distributions": "0.1.0",
-    "@types/react": "16.9.32",
+    "@types/react": "16.14.5",
     "@types/react-dom": "16.9.6",
     "@types/stemmer": "1.0.2",
     "@types/valid-url": "1.0.3",
