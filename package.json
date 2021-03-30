@@ -87,7 +87,7 @@
     "async_hooks": "1.0.0",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.2",
-    "husky": "6.0.0",
+    "husky": "^6.0.0",
     "install": "0.13.0",
     "jest": "25.2.7",
     "ml-cart": "2.0.1",
