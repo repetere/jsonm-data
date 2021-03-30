@@ -241,7 +241,7 @@ export declare class DataSet {
     * @param {String|Number} [value=''] - value to convert to a 1 or a 0
     * @returns {Number} 0 or 1 depending on truthiness of value
     */
-    static getBinaryValue(value?: string | boolean): 0 | 1;
+    static getBinaryValue(value?: string | boolean): 1 | 0;
     /**
      * creates a new raw data instance for preprocessing data for machine learning
      * @example

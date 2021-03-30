@@ -5,8 +5,8 @@ const avg = ArrayStat.mean;
 const mean = avg;
 const sum = ArrayStat.sum;
 const scale = (a, d) => a.map(x => (x - avg(a)) / d);
-const max = (a) => a.concat([]).sort((x, y) => x < y)[0];
-const min = a => a.concat([]).sort((x, y) => x > y)[0];
+const max = ArrayStat.max; // (a: number[]) => ArrayStat.max(a);//a.concat([]).sort((x:number, y:number):any => x < y)[0];
+const min = ArrayStat.min;
 const sd = ArrayStat.standardDeviation; //(a, av) => Math.sqrt(avg(a.map(x => (x - av) * x)));
 /**
  * Returns an array of the squared different of two arrays
