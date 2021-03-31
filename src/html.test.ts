@@ -5,11 +5,11 @@ describe('End to End HTML Tests', function(){
   let browser:puppeteer.Browser;
   let page:puppeteer.Page;
   beforeAll(async () => {
-    browser = await puppeteer.launch({ headless: false });
+    browser = await puppeteer.launch({ headless: true });
     page = await browser.newPage();
   });
   afterAll(async () => {
-    // await browser.close();
+    await browser.close();
   });
   describe('Browser Usage Test',()=>{
     it('should load CSVs the page', async()=>{
