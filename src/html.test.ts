@@ -18,11 +18,12 @@ describe('End to End HTML Tests', function(){
       await page.goto(`file://${path.join(__dirname,'../manual/media/example/example.html')}`,{
         waitUntil: 'networkidle2',
       });
-      await page.waitForTimeout(500)
+      await page.waitForTimeout(5000)
       const pageContent = await page.content()
       console.log({pageContent})
 
       const loadCSVURI_pre = await page.$eval('pre#csvtest1',(el:any)=>el.innerHTML)
+      console.log('loadCSVURI_pre',loadCSVURI_pre)
       const loadedCSV = JSON.parse(loadCSVURI_pre)
       expect(loadedCSV).toMatchObject([
         { Country: 'Brazil', Age: 44, Salary: 72000, Purchased: 'No' },
