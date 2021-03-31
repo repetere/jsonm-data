@@ -16,6 +16,7 @@ describe('End to End HTML Tests', function(){
       await page.goto(`file://${path.join(__dirname,'../manual/media/example/example.html')}`,{
         waitUntil: 'networkidle2',
       });
+      await page.waitForTimeout(2000)
       const loadCSVURI_pre = await page.$eval('pre#csvtest1',(el:any)=>el.innerHTML)
       const loadedCSV = JSON.parse(loadCSVURI_pre)
       expect(loadedCSV).toMatchObject([
@@ -54,6 +55,7 @@ describe('End to End HTML Tests', function(){
       // // await page.screenshot({ path: 'example.png' });
     },10000)
     it('should get binary value on the page', async()=>{
+      await page.waitForTimeout(500)
       const selectedColumnHTML = await page.$eval('pre#csvtest2',(el:any)=>el.innerHTML)
       expect(JSON.parse(selectedColumnHTML)).toMatchObject([
         {
@@ -65,6 +67,7 @@ describe('End to End HTML Tests', function(){
       ]);
     });
     it('should select columns on the page', async()=>{
+      await page.waitForTimeout(500)
       const selectedColumnHTML = await page.$eval('pre#csvtest3',(el:any)=>el.innerHTML)
       expect(JSON.parse(selectedColumnHTML)).toMatchObject(
         [
@@ -112,6 +115,7 @@ describe('End to End HTML Tests', function(){
       );
     });
     it('should columnize vectors on the page', async()=>{
+      await page.waitForTimeout(500)
       const selectedColumnHTML = await page.$eval('pre#csvtest4',(el:any)=>el.innerHTML)
       expect(JSON.parse(selectedColumnHTML)).toMatchObject({
         "data": [
@@ -833,6 +837,7 @@ describe('End to End HTML Tests', function(){
       })
     });
     it('should cross validate on the page', async()=>{
+      await page.waitForTimeout(500)
       const selectedColumnHTML = await page.$eval('pre#csvtest5',(el:any)=>el.innerHTML)
       expect(JSON.parse(selectedColumnHTML)).toMatchObject({
         "train": [
@@ -852,6 +857,7 @@ describe('End to End HTML Tests', function(){
       });
     });
     it('should use ARL on the page', async()=>{
+      await page.waitForTimeout(500)
       const selectedColumnHTML = await page.$eval('pre#csvtest6',(el:any)=>el.innerHTML)
       expect(JSON.parse(selectedColumnHTML)).toMatchObject({
         "gt": {
