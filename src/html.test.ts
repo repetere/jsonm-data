@@ -7,6 +7,13 @@ describe('End to End HTML Tests', function(){
   beforeAll(async () => {
     browser = await puppeteer.launch({ headless: true });
     page = await browser.newPage();
+    page.on('error', err=> {
+      console.error('error happen at the page: ', err);
+    });
+  
+    page.on('pageerror', pageerr=> {
+      console.error('pageerror occurred: ', pageerr);
+    })
   });
   afterAll(async () => {
     await browser.close();
