@@ -13,10 +13,15 @@ describe('End to End HTML Tests', function(){
   });
   describe('Browser Usage Test',()=>{
     it('should load CSVs the page', async()=>{
+      const pagePath = `file://${path.join(__dirname,'../manual/media/example/example.html')}`
+      console.log({pagePath})
       await page.goto(`file://${path.join(__dirname,'../manual/media/example/example.html')}`,{
         waitUntil: 'networkidle2',
       });
-      await page.waitForTimeout(2000)
+      await page.waitForTimeout(500)
+      const pageContent = await page.content()
+      console.log({pageContent})
+
       const loadCSVURI_pre = await page.$eval('pre#csvtest1',(el:any)=>el.innerHTML)
       const loadedCSV = JSON.parse(loadCSVURI_pre)
       expect(loadedCSV).toMatchObject([
