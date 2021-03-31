@@ -107,6 +107,8 @@
     "underscore": "^1.12.1"
   },
   "jest": {
+
+testEnvironment": "node",
     "preset": "ts-jest",
     "globals": {
       "ts-jest": {
