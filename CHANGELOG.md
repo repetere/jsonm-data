@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/repetere/modelx-data/compare/v1.1.0...v1.1.1) (2021-04-07)
+
+
+### Bug Fixes
+
+* adding more binary transformations ([fb7b4a5](https://github.com/repetere/modelx-data/commit/fb7b4a5195746d53fee8fd49e2df6b20704e6335))
+
 # [1.1.0](https://github.com/repetere/modelx-data/compare/v1.0.0...v1.1.0) (2021-03-30)
 
 
