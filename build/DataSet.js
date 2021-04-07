@@ -669,12 +669,12 @@ export class DataSet {
                     result.push(...[
                         [0, false,],
                         ['0', false,],
-                        ['FALSE', false,],
-                        ['false', false,],
+                        ['FALSE', 0,],
+                        ['false', 0,],
                         [1, true,],
                         ['1', true,],
-                        ['TRUE', true,],
-                        ['true', true,],
+                        ['TRUE', 1,],
+                        ['true', 1,],
                     ]);
                 }
                 result.push([val, DataSet.getBinaryValue(val),]);
