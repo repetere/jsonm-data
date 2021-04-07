@@ -434,6 +434,7 @@ export class DataSet {
             case 'No':
             case 'no':
             case 'False':
+            case 'FALSE':
             case 'F':
             case 'f':
                 return 0;
@@ -483,12 +484,15 @@ export class DataSet {
                     ['no', 0,],
                     ['No', 0,],
                     ['NO', 0,],
+                    ['FALSE', 0,],
                     ['F', 0,],
                     ['f', 0,],
                     ['null', 0,],
                     ['', 0,],
                     [undefined, 0,],
                     ['undefined', 0,],
+                    ['TRUE', 1,],
+                    ['true', 1,],
                     [1, true,],
                     [true, 1,],
                 ]);
@@ -665,8 +669,12 @@ export class DataSet {
                     result.push(...[
                         [0, false,],
                         ['0', false,],
+                        ['FALSE', false,],
+                        ['false', false,],
                         [1, true,],
                         ['1', true,],
+                        ['TRUE', true,],
+                        ['true', true,],
                     ]);
                 }
                 result.push([val, DataSet.getBinaryValue(val),]);
