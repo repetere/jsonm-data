@@ -1,6 +1,6 @@
 {
-  "name": "@modelx/data",
-  "version": "1.1.2",
+  "name": "@jsonstack/data",
+  "version": "0.0.1",
   "description": "modelscript is a javascript module with simple and efficient tools for data mining and data analysis in JavaScript. When modelscript used with ML.js, pandas-js, and numjs, you're left with the equivalent R/Python tool set in JavaScript.",
   "main": "dist/index.cjs.js",
   "cjs": "dist/index.cjs.js",
@@ -12,7 +12,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/repetere/modelx-data.git"
+    "url": "git+https://github.com/repetere/jsonm-data.git"
   },
   "author": {
     "name": "Yaw Joseph Etse",
@@ -34,9 +34,9 @@
     "numpy"
   ],
   "bugs": {
-    "url": "https://github.com/repetere/modelx-data/issues"
+    "url": "https://github.com/repetere/jsonm-data/issues"
   },
-  "homepage": "https://github.com/repetere/modelx-data#readme",
+  "homepage": "https://github.com/repetere/jsonm-data#readme",
   "scripts": {
     "dev": "rollup -c -w",
     "benchmark": "node -r esm  benchmark/main_bmrk.js",
