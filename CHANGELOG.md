@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/repetere/jsonm-data/compare/v1.1.2...v1.1.3) (2021-04-17)
+
+
+### Bug Fixes
+
+* updated module" ([143d818](https://github.com/repetere/jsonm-data/commit/143d8184599ade768dddbff61397c267cf3ea4c4))
+
 ## [1.1.2](https://github.com/repetere/modelx-data/compare/v1.1.1...v1.1.2) (2021-04-07)
 
 
