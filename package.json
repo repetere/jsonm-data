@@ -80,7 +80,7 @@
     "@types/probability-distributions": "0.1.0",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
-    "@types/stemmer": "1.0.2",
+    "@types/stemmer": "2.0.0",
     "@types/valid-url": "1.0.3",
     "husky": "^6.0.0",
     "install": "0.13.0",
