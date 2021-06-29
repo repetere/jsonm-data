@@ -84,7 +84,7 @@
     "@types/valid-url": "1.0.3",
     "husky": "^6.0.0",
     "install": "0.13.0",
-    "jest": "^26.6.3",
+    "jest": "^27.0.6",
     "ml-cart": "^2.0.2",
     "ml-knn": "3.0.0",
     "ml-random-forest": "^2.0.2",
