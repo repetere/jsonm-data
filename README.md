@@ -1,3 +1,5 @@
+# ⚠️ REPO MOVED TO: https://github.com/repetere/jsonstack-data ⚠️
+
 # @modelx/data
 [![Coverage Status](https://coveralls.io/repos/github/repetere/modelx-data/badge.svg?branch=master)](https://coveralls.io/github/repetere/modelx-data?branch=master) ![Build, Test & Coverage](https://github.com/repetere/modelx-data/workflows/Build,%20Test%20&%20Coverage/badge.svg)
 
